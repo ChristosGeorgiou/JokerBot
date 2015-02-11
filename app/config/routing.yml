@@ -1,0 +1,13 @@
+app:
+    resource: @GeoAppBundle/Controller/
+    type:     annotation
+
+user:
+    resource: @GeoUserBundle/Controller/
+    type:     annotation
+
+logout:
+    path:     /logout
+
+default_security_target:
+    path:     /

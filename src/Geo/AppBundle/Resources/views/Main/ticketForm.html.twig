@@ -1,0 +1,73 @@
+<script type="text/javascript">
+  $(function(){
+    $(".draw-range").on('input',function(){
+      console.log($(this))
+        if($(this).val().length == 4)
+        {
+          $(this).next("input").focus();
+        }
+    });
+    $(".jokernumbers input").on('input',function(){
+        if($(this).val().length == 2)
+        {
+          $(this).next("input").focus();
+        }
+    });
+  })
+</script>
+<form action="ticketsave" class="ui small modal aform" method="post">
+
+    <i class="close icon"></i>
+    
+    <div class="header">
+      {% if id is defined %}
+        Επεξεργασία Δελτίου
+      {% else %}
+        Προσθήκη Δελτίου
+      {% endif %}
+    </div>
+
+    <div class="ui form content">
+      <div class="ui horizontal divider" style="">
+        Κληρωσεις
+      </div>
+
+      <div class="two fields">
+        <div class="field">
+          <label>Απο</label>
+          <input class="draw-range" type="text" name="start_draw" value="">
+        </div>
+        <div class="field">
+          <label>Έως</label>
+          <input class="draw-range" type="text" name="end_draw" value="">
+        </div>
+      </div>
+
+
+      <div class="ui horizontal divider">
+        Στηλες
+      </div>
+
+      {% for i in 1..5 %}
+      <div class="seven fields jokernumbers">
+        <div class="field">
+          <label>{{i}}.</label>
+        </div>
+        {% for j in 1..5 %}
+        <div class="field">
+          <input type="text" name="number[{{i}}][{{j}}]" value="">
+        </div>
+        {% endfor %}
+        <div class="field">
+          <input type="text" name="number[{{i}}][6]" value="">
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    <div class="actions">
+      <div class="ui button cancel">Άκυρο</div>
+      <button type="submit" class="ui green button ok">Αποθήκευση</button>
+    </div>
+</form>

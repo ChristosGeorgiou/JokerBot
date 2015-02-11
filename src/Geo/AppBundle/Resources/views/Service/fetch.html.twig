@@ -1,0 +1,28 @@
+{% extends "GeoAppBundle::layout.html.twig" %}
+
+{% block wrapper %}
+<div class="ui smallbox">
+  <div class="ui piled segment">
+    <h4 class="ui header">Fetched Results</h4>
+    <div class="ui list">
+    {% for fetchedResult in fetchedResults %}
+      <div class="item">
+        {% if fetchedResult.status %}
+          <i class="check circle icon"></i>
+        {% else %}
+          <i class="warning circle icon"></i>
+        {% endif %}
+        <div class="content">
+          <div class="header">{{fetchedResult.code}} - {{fetchedResult.date}}</div>
+          <div class="description">{{fetchedResult.numbers}}</div>
+        </div>
+      </div>
+    {% else %}
+    <div class="ui message">
+      <div class="header">No results where found</div>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

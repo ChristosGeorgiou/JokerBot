@@ -1,0 +1,18 @@
+Geo\AppBundle\Entity\Draw:
+    type: entity
+    table: draws
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        code:
+            type: integer
+        numbers: ~
+        drawAt:
+            type: datetime
+            column: draw_at
+        createdAt:
+            type: datetime
+            column: created_at

@@ -1,0 +1,22 @@
+Geo\AppBundle\Entity\Ticket:
+    type: entity
+    table: tickets
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        startDraw:
+            type: integer
+            column: start_draw
+        endDraw:
+            type: integer
+            column: end_draw
+        createdAt:
+            type: datetime
+            column: created_at
+    oneToMany:
+        ticketDetail:
+            targetEntity: TicketDetail
+            mappedBy: ticket

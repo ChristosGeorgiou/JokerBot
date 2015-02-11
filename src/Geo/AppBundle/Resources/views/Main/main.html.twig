@@ -1,0 +1,60 @@
+{% extends "GeoAppBundle::base.html.twig" %}
+
+{% block title %}
+  Tickets
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript">
+  $(function(){
+    function fetch_ticket(ticket_id,anchor){
+      $("#ticket").addClass("loading");
+      $(".ui.loading.segment:after").css("top","150px");
+      $(anchor).siblings().removeClass("active");
+      $(anchor).addClass("active");
+      $("#ticket").load("ticket/"+ticket_id,function(){
+        $("#ticket").removeClass("loading");
+      })
+    }
+
+    $('.ticket').on("click",function(){
+      fetch_ticket($(this).data("id"),$(this))
+    })
+
+    if($(".ticket").first().length)
+    {
+      fetch_ticket($(".ticket").first().data("id"),$(".ticket").first());
+    }
+    else
+    {
+      $("#ticket").removeClass("loading");
+      _msg = $("<div/>",{
+        "class":"ui message",
+        "html":"<div class='header'>No Tickets found</div>"
+      })
+      $("#ticket").prepend(_msg);
+    }
+  })
+  </script>
+{% endblock %}
+
+{% block content %}
+<div class="ui grid">
+  <div class="five wide column">
+    <div class="ui vertical pointing fluid menu">
+      <a href="ticketform" class="item amodal">
+        <strong><i class="add icon"></i> Add New Ticket</strong>
+      </a>
+      {% for ticket in tickets %}
+      <a class="item ticket" data-id="{{ticket.id}}">
+        {{ticket.createdAt|date("d/m/Y")}} - {{ticket.startDraw}}/{{ticket.endDraw}}
+        <!-- <div class="ui green label">10%</div> -->
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="eleven wide column">
+    <div id="ticket" class="ui segment" style="min-height: 200px;padding: 0;"></div>
+  </div>
+</div>
+{% endblock %}

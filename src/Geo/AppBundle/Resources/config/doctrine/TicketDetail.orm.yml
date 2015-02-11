@@ -1,0 +1,21 @@
+Geo\AppBundle\Entity\TicketDetail:
+    type: entity
+    table: ticket_details
+    indexes:
+        FK_ColumnsTickets:
+            columns:
+                - ticket_id
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        numbers: ~
+    manyToOne:
+        ticket:
+            targetEntity: Ticket
+            inversedBy: ticketdetail
+            joinColumn:
+                name: ticket_id
+                referencedColumnName: id
