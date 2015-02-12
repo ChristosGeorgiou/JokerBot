@@ -7,6 +7,9 @@
 {% block javascripts %}
   <script type="text/javascript">
   $(function(){
+    function fetch_tickets(){
+    }
+
     function fetch_ticket(ticket_id,anchor){
       $("#ticket").addClass("loading");
       $(".ui.loading.segment:after").css("top","150px");

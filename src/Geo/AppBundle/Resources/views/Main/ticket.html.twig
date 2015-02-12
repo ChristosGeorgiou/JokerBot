@@ -66,9 +66,12 @@ $(function(){
 
     {% else %}
     <div class="column" style="min-height: 200px;">
-      <div class="ui message">
-          <p>Δεν έχουν γίνει ακόμα κληρώσεις ή το σύστημα δεν έχει επεξεργαστεί την πιό πρόσφατη.</p>
-          <p>Προσπαθείστε ξανά αργότερα ή πατήστε <a href="#">εδώ</a> για άμεσο refresh</p>
+      <div class="ui icon message">
+        <i class="icon frown"></i>
+        <div class="content">
+          <div class="header">No draws where found</div>
+          <p>Please check back soon.</p>
+        </div>
       </div>
     </div>
     {% endfor %}

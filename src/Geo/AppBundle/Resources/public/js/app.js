@@ -20,7 +20,7 @@ $(function() {
         error: function(jqXHR, textStatus, errorThrown) {
           _msg = $("<div/>", {
             "class": "ui negative message",
-            "html": "<div class='header'>Σφάλμα Αποθήκευσης</div><p>" + errorThrown + "</p>"
+            "html": "<div class='header'>Error</div><p>" + errorThrown + "</p>"
           })
           _this.find(".form").prepend(_msg)
         },
@@ -48,7 +48,6 @@ $(function() {
           verbose: true
         }).modal("show")
 
-        $('[data-lorem]').lorem();
         $("#loader").fadeOut("slow");
       })
     })

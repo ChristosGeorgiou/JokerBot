@@ -1,51 +1,50 @@
 <script type="text/javascript">
   $(function(){
-    $(".draw-range").on('input',function(){
-      console.log($(this))
-        if($(this).val().length == 4)
-        {
-          $(this).next("input").focus();
-        }
+    $(".draw-range").on('input',function(){``
+      if($(this).val().length == 4)
+      {
+        $(this).next("input").focus();
+      }
     });
     $(".jokernumbers input").on('input',function(){
-        if($(this).val().length == 2)
-        {
-          $(this).next("input").focus();
-        }
+      if($(this).val().length == 2)
+      {
+        $(this).next("input").focus();
+      }
     });
   })
 </script>
-<form action="ticketsave" class="ui small modal aform" method="post">
+<form action="ticketsave" class="ui small modal">
 
     <i class="close icon"></i>
-    
+
     <div class="header">
       {% if id is defined %}
-        Επεξεργασία Δελτίου
+        Edit Ticket
       {% else %}
-        Προσθήκη Δελτίου
+        Add new Ticket
       {% endif %}
     </div>
 
     <div class="ui form content">
       <div class="ui horizontal divider" style="">
-        Κληρωσεις
+        Draws
       </div>
 
       <div class="two fields">
         <div class="field">
-          <label>Απο</label>
+          <label>From</label>
           <input class="draw-range" type="text" name="start_draw" value="">
         </div>
         <div class="field">
-          <label>Έως</label>
+          <label>To</label>
           <input class="draw-range" type="text" name="end_draw" value="">
         </div>
       </div>
 
 
       <div class="ui horizontal divider">
-        Στηλες
+        Columns
       </div>
 
       {% for i in 1..5 %}
@@ -67,7 +66,9 @@
     </div>
 
     <div class="actions">
-      <div class="ui button cancel">Άκυρο</div>
-      <button type="submit" class="ui green button ok">Αποθήκευση</button>
+      <button type="submit" class="ui green button ok">
+        <i class="icon checkmark"></i>
+        Save Ticket
+      </button>
     </div>
 </form>
