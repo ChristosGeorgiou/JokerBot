@@ -17,6 +17,10 @@ security:
       pattern:  ^/(_(profiler|wdt|configurator|error)|css|images|js)/
       security: false
 
+    static:
+      pattern:   ^/(tos|help)$
+      anonymous: ~
+
     nonesecure:
       pattern:   ^/(login|register)$
       anonymous: ~
@@ -27,6 +31,7 @@ security:
       logout: ~
 
   access_control:
+    - { path: ^/(tos|help)$, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/(login|register)$, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/cron, role: IS_AUTHENTICATED_ANONYMOUSLY } #remote cron
     - { path: ^/, role: ROLE_USER }
