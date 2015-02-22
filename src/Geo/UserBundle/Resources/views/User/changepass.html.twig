@@ -1,0 +1,77 @@
+<script type="text/javascript">
+$(function(){
+
+  $('#form-changepass').form({
+    oldpassword: {
+      identifier  : 'changepass[oldpassword]',
+      rules: [
+        {
+          type   : 'empty',
+          prompt : 'Please enter your old passowrd'
+        },
+      ]
+    },
+    newpassword_newpassword: {
+      identifier  : 'changepass[newpassword][password]',
+      rules: [
+        {
+          type   : 'empty',
+          prompt : 'Please enter a password'
+        },
+        {
+          type   : 'length[6]',
+          prompt : 'Password too sort.<br>Try with one with more than 6 characters'
+        },
+      ]
+    },
+    newpassword_newpassword: {
+      identifier  : 'changepass[newpassword][repeat]',
+      rules: [
+        {
+          type   : 'empty',
+          prompt : 'Please repeat the password'
+        },
+        {
+          type   : 'match[password]',
+          prompt : 'Passwords do not match'
+        },
+      ]
+    },
+  }, {
+    on: 'blur',
+    inline: 'true'
+  });
+
+})
+</script>
+
+{{ form_start(form, { 'attr': {"id":"form-changepass", 'class': 'ui small modal'} }) }}
+
+    <i class="close icon"></i>
+
+    <div class="header">
+      Change Password
+    </div>
+
+    <div class="ui form content">
+
+      <div class="field">
+          <label>Old Password</label>
+          {{ form_widget(form.oldpassword) }}
+      </div>
+      <div class="field">
+          <label>New Password</label>
+          {{ form_widget(form.newpassword.password) }}
+      </div>
+      <div class="field">
+          <label>Repeat Password</label>
+          {{ form_widget(form.newpassword.repeat) }}
+      </div>
+
+    </div>
+
+    <div class="actions">
+      {{ form_widget(form.submit, { 'attr': {'class': "ui green button ok"} }) }}
+    </div>
+
+{{ form_end(form) }}

@@ -10,6 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Geo\UserBundle\Form\Type\RegistrationType;
 use Geo\UserBundle\Form\Model\Registration;
 
+use Geo\UserBundle\Form\Type\ChangepassType;
+use Geo\UserBundle\Form\Model\Changepass;
+
 use Geo\UserBundle\Entity\User;
 
 class UserController extends Controller
@@ -50,6 +53,38 @@ class UserController extends Controller
     {
       $registration = new Registration();
       $form = $this->createForm(new RegistrationType(), $registration);
+      $form->handleRequest($request);
+
+      if ($form->isValid()) {
+          $registration = $form->getData();
+
+          $user = $registration->getUser();
+
+          $hashedPassword = $this->container
+           ->get('security.password_encoder')
+           ->encodePassword($user, $user->getPassword());
+
+          $user->setPassword($hashedPassword);
+
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($user);
+          $em->flush();
+          return $this->redirect("login");
+      }
+
+      return array(
+        'form' => $form->createView(),
+      );
+    }
+
+    /**
+     * @Route("/changepass", name="changepass")
+     * @Template()
+     */
+    public function changepassAction(Request $request)
+    {
+      $changepass = new Changepass();
+      $form = $this->createForm(new ChangepassType(), $changepass);
       $form->handleRequest($request);
 
       if ($form->isValid()) {

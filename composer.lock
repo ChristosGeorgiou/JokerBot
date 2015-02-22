@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1bcb11321531ef35c76536741e43b21e",
+    "hash": "f4250a229847b13ac4b3c9c182f8886f",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1088,6 +1088,42 @@
             "time": "2012-12-21 11:40:51"
         },
         {
+            "name": "semantic/ui",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Semantic-Org/Semantic-UI.git",
+                "reference": "909023d0447c65bc6e4329ce920ad63098f0ffed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Semantic-Org/Semantic-UI/zipball/909023d0447c65bc6e4329ce920ad63098f0ffed",
+                "reference": "909023d0447c65bc6e4329ce920ad63098f0ffed",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jack Lukic",
+                    "email": "jacklukic@gmail.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "Semantic empowers designers and developers by creating a shared vocabulary for UI.",
+            "homepage": "http://www.semantic-ui.com",
+            "keywords": [
+                "css",
+                "framework",
+                "semantic",
+                "ui"
+            ],
+            "time": "2015-02-21 17:46:31"
+        },
+        {
             "name": "sensio/distribution-bundle",
             "version": "v3.0.16",
             "target-dir": "Sensio/Bundle/DistributionBundle",
@@ -1751,7 +1787,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "semantic/ui": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -12,7 +12,7 @@ $(function(){
 
   $('#form-register').form({
     username: {
-      identifier  : 'username',
+      identifier  : 'registration_user_username',
       rules: [
         {
           type   : 'empty',
@@ -25,7 +25,7 @@ $(function(){
       ]
     },
     password: {
-      identifier  : 'password',
+      identifier  : 'registration_user_password_password',
       rules: [
         {
           type   : 'empty',
@@ -38,7 +38,7 @@ $(function(){
       ]
     },
     repeat_password: {
-      identifier  : 'repeat_password',
+      identifier  : 'registration_user_password_repeat',
       rules: [
         {
           type   : 'empty',
@@ -51,7 +51,7 @@ $(function(){
       ]
     },
   }, {
-    on: 'submit',
+    on: 'blur',
     inline: 'true'
   });
 

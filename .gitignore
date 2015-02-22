@@ -37,3 +37,4 @@
 
 # SQL DUMPS
 /sql/
+composer.lock
