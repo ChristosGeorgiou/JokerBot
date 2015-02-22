@@ -64,7 +64,19 @@ $(function(){
   <div class="logo" style="text-align:center">Register</div>
   <div class="ui piled segment">
   {{ form_start(form, { 'attr': {'id': 'form-register','class': 'ui form'} }) }}
-    {{ form_errors(form) }}
+    {% if not form.vars.valid %}
+    <div class="ui small negative message">
+      {% for error in form.vars.errors %}
+        <p>{{ error.message }}</p>
+      {% endfor %}
+      {% for error in form.user.username.vars.errors %}
+        <p>{{ error.message }}</p>
+      {% endfor %}
+      {% for error in form.user.password.password.vars.errors %}
+        <p>{{ error.message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="field" style="padding-top:5px;">
       <div class="ui big fluid left icon input">
         <i class="user icon"></i>
@@ -94,6 +106,8 @@ $(function(){
     <div class="field" style="padding-top:5px;">
       {{ form_widget(form.Register, { 'attr': {'class': "ui big fluid button green"} }) }}
     </div>
+
+      {{ dump(form) }}
   {{ form_end(form) }}
   </div>
 </div>

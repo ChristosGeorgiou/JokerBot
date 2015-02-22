@@ -1,0 +1,13 @@
+Geo\UserBundle\Entity\User:
+  constraints:
+    - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+        fields: [username]
+        message: "This username is already been used"
+  properties:
+    password:
+      - Length:
+          min: 6
+          minMessage: "Your password must be at least {{ limit }} characters long"
+  getters:
+    passwordLegal:
+      - "True": { message: "The password cannot match your username" }

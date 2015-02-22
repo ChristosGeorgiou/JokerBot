@@ -74,4 +74,9 @@ class User implements UserInterface, \Serializable
     $this->password,
     ) = unserialize($serialized);
   }
+
+  public function isPasswordLegal()
+  {
+    return $this->username != $this->password;
+  }
 }

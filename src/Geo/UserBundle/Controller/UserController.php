@@ -49,16 +49,7 @@ class UserController extends Controller
     public function registerAction(Request $request)
     {
       $registration = new Registration();
-      // $form = $this->createForm(new RegistrationType(), $registration, array(
-      //   'action' => $this->generateUrl('account_create'),
-      // ));
-
       $form = $this->createForm(new RegistrationType(), $registration);
-
-      $em = $this->getDoctrine()->getManager();
-
-      //$form = $this->createForm(new RegistrationType(), new Registration());
-
       $form->handleRequest($request);
 
       if ($form->isValid()) {
@@ -72,18 +63,12 @@ class UserController extends Controller
 
           $user->setPassword($hashedPassword);
 
+          $em = $this->getDoctrine()->getManager();
           $em->persist($user);
           $em->flush();
           return $this->redirect("login");
       }
-
-
-      //  return $this->render(
-      //      'AcmeAccountBundle:Account:register.html.twig',
-      //      array('form' => $form->createView())
-      //  );
-
-
+      
       return array(
         'form' => $form->createView(),
       );
