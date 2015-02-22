@@ -7,8 +7,6 @@
 {% block javascripts %}
   <script type="text/javascript">
   $(function(){
-    function fetch_tickets(){
-    }
 
     function fetch_ticket(ticket_id,anchor){
       $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -29,36 +27,47 @@
     {
       fetch_ticket($(".ticket").first().data("id"),$(".ticket").first());
     }
-    else
-    {
-      $("#ticket").removeClass("loading");
-      _msg = $("<div/>",{
-        "class":"ui message",
-        "html":"<div class='header'>No Tickets found</div>"
-      })
-      $("#ticket").prepend(_msg);
-    }
   })
   </script>
 {% endblock %}
 
 {% block content %}
 <div class="ui grid">
-  <div class="five wide column">
-    <div class="ui vertical pointing fluid menu">
-      <a href="ticketform" class="item amodal">
-        <strong><i class="add icon"></i> Add New Ticket</strong>
-      </a>
-      {% for ticket in tickets %}
-      <a class="item ticket" data-id="{{ticket.id}}">
-        {{ticket.createdAt|date("d/m/Y")}} - {{ticket.startDraw}}/{{ticket.endDraw}}
-        <!-- <div class="ui green label">10%</div> -->
-      </a>
-      {% endfor %}
+  {% if tickets|length %}
+    <div class="five wide column">
+      <div class="ui vertical pointing fluid menu">
+        <a href="ticketform" class="item amodal">
+          <strong><i class="add icon"></i> Add New Ticket</strong>
+        </a>
+        {% for ticket in tickets %}
+        <a class="item ticket" data-id="{{ticket.id}}">
+          {{ticket.createdAt|date("d/m/Y")}} - {{ticket.startDraw}}/{{ticket.endDraw}}
+        </a>
+        {% endfor %}
+      </div>
     </div>
-  </div>
-  <div class="eleven wide column">
-    <div id="ticket" class="ui segment" style="min-height: 200px;padding: 0;"></div>
-  </div>
+    <div class="eleven wide column">
+      <div id="ticket" class="ui segment" style="min-height: 200px;padding: 0;"></div>
+    </div>
+  {% else %}
+    <div class="three wide column"></div>
+    <div class="ten wide column">
+      <div class="ui piled segment" style="margin-top: 50px;">
+        <h3 class="ui header">Welcome <strong>{{ app.user.username|title }}</strong> to JokerBot!</h3>
+        <h4>A few things to keep in mind</h4>
+        <p>This is just a fun project of me. I created it just to play with some web techologies.</p>
+        <p>However, this it is a working service, which I use for my personal tickets, and I actively improving.</p>
+        <p>It's is very likely to issues may occure here or there and if so please give me feedback in order to fix them.</p>
+        <p><strong>Also it is VERY IMPORTANT, ALWAYS to validate your ticket in your agent. This service may NOT give you correct results all the time.</strong></p>
+        <p>Finaly this service is based on data provided by OPAP Web Service. That service somtimes lags and doesn't responed correctly. When that happens draw results will not be available</p>
+
+        <div class="ui divider"></div>
+
+        <p>So... ready to create your first ticket???. Click bellow...</p>
+        <a href="ticketform" class="ui button green fluid amodal">Add your first Ticket</a>
+
+      </div>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}
