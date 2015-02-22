@@ -1,0 +1,16 @@
+Geo\UserBundle\Entity\User:
+  type: entity
+  table: users
+  repositoryClass: Geo\UserBundle\Entity\UserRepository
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: IDENTITY
+  fields:
+    username:
+      unique: true
+    password: ~
+    isActive:
+      column: is_active
+      type: boolean

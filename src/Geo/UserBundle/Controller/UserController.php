@@ -63,7 +63,16 @@ class UserController extends Controller
 
       if ($form->isValid()) {
           $registration = $form->getData();
-          $em->persist($registration->getUser());
+
+          $user = $registration->getUser();
+
+          $hashedPassword = $this->container
+           ->get('security.password_encoder')
+           ->encodePassword($user, $user->getPassword());
+
+          $user->setPassword($hashedPassword);
+
+          $em->persist($user);
           $em->flush();
           return $this->redirect("login");
       }
