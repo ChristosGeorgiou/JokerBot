@@ -20,3 +20,9 @@ Geo\AppBundle\Entity\Ticket:
         ticketDetail:
             targetEntity: TicketDetail
             mappedBy: ticket
+    manyToOne:
+        user:
+            targetEntity: Geo\UserBundle\Entity\User
+            joinColumn:
+                name: user_id
+                referencedColumnName: id

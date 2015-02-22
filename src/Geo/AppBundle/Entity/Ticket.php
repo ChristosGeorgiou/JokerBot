@@ -4,6 +4,8 @@ namespace Geo\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Geo\UserBundle\Entity\User;
+
 class Ticket
 {
     private $id;
@@ -14,6 +16,8 @@ class Ticket
 
     private $earnings;
     private $completion;
+
+    private $user;
 
     public function getId()
     {
@@ -94,5 +98,15 @@ class Ticket
     public function getTicketDetail()
     {
         return $this->ticketDetail;
+    }
+
+    public function setUser(User $user)
+    {
+      $this->user = $user;
+    }
+
+    public function getUser()
+    {
+      return $this->user;
     }
 }

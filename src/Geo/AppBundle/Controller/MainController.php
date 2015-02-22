@@ -8,7 +8,9 @@ use Geo\AppBundle\Entity\Ticket;
 use Geo\AppBundle\Entity\TicketDetail;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
 class MainController extends Controller {
+
     /**
      * @Route("/", name="Tickets")
      * @Template()
@@ -33,20 +35,40 @@ class MainController extends Controller {
         }
       }
 
-      $tickets = $this->getDoctrine()->getRepository("GeoAppBundle:Ticket")->findBy(array(), array('createdAt' => 'DESC'));
+      //$user = $this->get('security.token_storage')->getToken()->getUser();
+
+      $tickets = $this->getDoctrine()
+        ->getRepository("GeoAppBundle:Ticket")
+        ->findBy(array(
+          "user" => $this->get('security.token_storage')->getToken()->getUser()
+        ), array('createdAt' => 'DESC'));
+
       return array(
         "tickets" => $tickets,
         "greeting" => $msg,
         );
     }
+
     /**
      * @Route("/ticket/{id}", name="Ticket")
      * @Template()
      */
     public function ticketAction($id) {
-        $ticket = $this->getDoctrine()->getRepository("GeoAppBundle:Ticket")->findOneById($id);
-        //var_dump($ticket->getStartDraw());
-        $draws = $this->getDoctrine()->getRepository("GeoAppBundle:Draw")->createQueryBuilder('p')->where('p.code >= :startDraw')->andWhere('p.code <= :endDraw')->setParameter('startDraw', $ticket->getStartDraw())->setParameter('endDraw', $ticket->getEndDraw())->orderBy('p.code', 'DESC')->getQuery()->getResult();
+        $ticket = $this->getDoctrine()
+          ->getRepository("GeoAppBundle:Ticket")
+          ->findOneById($id);
+
+        $draws = $this->getDoctrine()
+          ->getRepository("GeoAppBundle:Draw")
+          ->createQueryBuilder('p')
+          ->where('p.code >= :startDraw')
+          ->andWhere('p.code <= :endDraw')
+          ->setParameter('startDraw', $ticket->getStartDraw())
+          ->setParameter('endDraw', $ticket->getEndDraw())
+          ->orderBy('p.code', 'DESC')
+          ->getQuery()
+          ->getResult();
+
         $results = array();
         //$_ticketDetails = $ticket->getTicketDetail();
         foreach ($ticket->getTicketDetail() as $_ticketDetail) {
@@ -67,6 +89,7 @@ class MainController extends Controller {
         //var_dump($draw->getResults());
         return array("ticket" => $ticket, "draws" => $draws,);
     }
+
     private function sliceColumn($column) {
         //var_dump($column);
         $numbers = array_slice($column, 0, 5);
@@ -74,6 +97,7 @@ class MainController extends Controller {
         $joker = $column[5];
         return array("n" => $numbers, "j" => $joker);
     }
+
     private function compareColumns($drawColumn, $ticketColumn) {
         $res = array();
         foreach ($ticketColumn["n"] as $_ticketNumber) {
@@ -86,6 +110,7 @@ class MainController extends Controller {
         $res[] = $item;
         return $res;
     }
+
     /**
      * @Route("/ticketform", defaults={"id" = false})
      * @Route("/ticketform/{id}")
@@ -94,6 +119,7 @@ class MainController extends Controller {
     public function ticketFormAction($id) {
         return array();
     }
+
     /**
      * @Route("/ticketsave")
      */
@@ -107,6 +133,7 @@ class MainController extends Controller {
         $ticket->setEndDraw($_end_draw);
         $ticket->setEarnings(0);
         $ticket->setCreatedAt(new \DateTime());
+        $ticket->setUser($this->get('security.token_storage')->getToken()->getUser());
         $em->persist($ticket);
         foreach ($_number as $col => $iter) {
             if (count(array_filter($iter)) == count($iter)) {
