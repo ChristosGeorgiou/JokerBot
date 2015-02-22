@@ -68,63 +68,9 @@ class UserController extends Controller
           $em->flush();
           return $this->redirect("login");
       }
-      
+
       return array(
         'form' => $form->createView(),
       );
     }
-
-    // /**
-    //  * @Route("/create", name="account_create")
-    //  * @Template()
-    //  */
-    // public function createAction(Request $request)
-    // {
-    //     $em = $this->getDoctrine()->getManager();
-    //
-    //     $form = $this->createForm(new RegistrationType(), new Registration());
-    //
-    //     $form->handleRequest($request);
-    //
-    //     if ($form->isValid()) {
-    //         $registration = $form->getData();
-    //
-    //         $em->persist($registration->getUser());
-    //         $em->flush();
-    //
-    //         return $this->redirect(...);
-    //     }
-    //
-    //     return $this->render(
-    //         'AcmeAccountBundle:Account:register.html.twig',
-    //         array('form' => $form->createView())
-    //     );
-    // }
-
-    // public function registerAction(Request $request)
-    // {
-    //   $user = new User();
-    //
-    //   $form = $this->createFormBuilder($user)
-    //     ->add('username', 'text')
-    //     ->add('password', 'password')
-    //     ->add(false, 'checkbox', array(
-    //       'label'     => 'I agree to the <a href="#">Terms of Service</a>.',
-    //       'required'  => true,
-    //     ))
-    //     ->add('save', 'submit', array('label' => 'Create User'))
-    //     ->getForm();
-    //
-    //   $form->handleRequest($request);
-    //   if ($form->isValid()) {
-    //       // perform some action, such as saving the task to the database
-    //
-    //     return $this->redirect($this->generateUrl('task_success'));
-    //   }
-    //
-    //   return array(
-    //     'form' => $form->createView(),
-    //   );
-    // }
-
 }
