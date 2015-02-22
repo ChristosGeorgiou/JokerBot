@@ -4,6 +4,10 @@ Geo\UserBundle\Entity\User:
         fields: [username]
         message: "This username is already been used"
   properties:
+    username:
+      - Length:
+          min: 6
+          minMessage: "Your username must be at least {{ limit }} characters long"
     password:
       - Length:
           min: 6
