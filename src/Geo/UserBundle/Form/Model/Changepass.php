@@ -2,28 +2,30 @@
 
 namespace Geo\UserBundle\Form\Model;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use Geo\UserBundle\Entity\User;
-
 class Changepass
 {
-    /**
-     * @Assert\NotBlank()
-     */
     protected $oldpassword;
 
-    /**
-     * @Assert\NotBlank()
-     */
     protected $newpassword;
 
-    public function getOldpassword()
+    public function getOldPassword()
     {
       return $this->oldpassword;
     }
 
-    public function getNewpassword()
+    public function setOldPassword($oldpassword)
+    {
+      $this->oldpassword = $oldpassword;
+    }
+
+    public function getNewPassword()
     {
       return $this->newpassword;
     }
+
+    public function setNewPassword($newpassword)
+    {
+      $this->newpassword = $newpassword;
+    }
+    
 }

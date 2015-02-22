@@ -1,50 +1,3 @@
-<script type="text/javascript">
-$(function(){
-
-  $('#form-changepass').form({
-    oldpassword: {
-      identifier  : 'changepass[oldpassword]',
-      rules: [
-        {
-          type   : 'empty',
-          prompt : 'Please enter your old passowrd'
-        },
-      ]
-    },
-    newpassword_newpassword: {
-      identifier  : 'changepass[newpassword][password]',
-      rules: [
-        {
-          type   : 'empty',
-          prompt : 'Please enter a password'
-        },
-        {
-          type   : 'length[6]',
-          prompt : 'Password too sort.<br>Try with one with more than 6 characters'
-        },
-      ]
-    },
-    newpassword_newpassword: {
-      identifier  : 'changepass[newpassword][repeat]',
-      rules: [
-        {
-          type   : 'empty',
-          prompt : 'Please repeat the password'
-        },
-        {
-          type   : 'match[password]',
-          prompt : 'Passwords do not match'
-        },
-      ]
-    },
-  }, {
-    on: 'blur',
-    inline: 'true'
-  });
-
-})
-</script>
-
 {{ form_start(form, { 'attr': {"id":"form-changepass", 'class': 'ui small modal'} }) }}
 
     <i class="close icon"></i>
@@ -73,5 +26,52 @@ $(function(){
     <div class="actions">
       {{ form_widget(form.submit, { 'attr': {'class': "ui green button ok"} }) }}
     </div>
+
+    <script type="text/javascript">
+    $(function(){
+
+      $('#form-changepass').form({
+        oldpassword: {
+          identifier  : 'changepass_oldpassword',
+          rules: [
+            {
+              type   : 'empty',
+              prompt : 'Please enter your old passowrd'
+            },
+          ]
+        },
+        newpassword_password: {
+          identifier  : 'changepass_newpassword_password',
+          rules: [
+            {
+              type   : 'empty',
+              prompt : 'Please enter a password'
+            },
+            {
+              type   : 'length[6]',
+              prompt : 'Password too sort.<br>Try with one with more than 6 characters'
+            },
+          ]
+        },
+        newpassword_repeat: {
+          identifier  : 'changepass_newpassword_repeat',
+          rules: [
+            {
+              type   : 'empty',
+              prompt : 'Please repeat the password'
+            },
+            {
+              type   : 'match[changepass_newpassword_password]',
+              prompt : 'Passwords do not match'
+            },
+          ]
+        },
+      }, {
+        on: 'blur',
+        inline: 'true'
+      });
+
+    })
+    </script>
 
 {{ form_end(form) }}

@@ -15,3 +15,13 @@ Geo\UserBundle\Entity\User:
   getters:
     passwordLegal:
       - "True": { message: "The password cannot match your username" }
+
+Geo\UserBundle\Model\Changepass:
+  properties:
+    oldpassword:
+      - Symfony\Component\Security\Core\Validator\Constraints\UserPassword:
+          message: "Wrong value for your current password"
+    newpassword:
+      - Length:
+          min: 6
+          minMessage: "Your password must be at least {{ limit }} characters long"

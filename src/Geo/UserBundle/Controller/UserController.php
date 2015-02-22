@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 use Geo\UserBundle\Form\Type\RegistrationType;
 use Geo\UserBundle\Form\Model\Registration;
@@ -88,20 +90,34 @@ class UserController extends Controller
       $form->handleRequest($request);
 
       if ($form->isValid()) {
-          $registration = $form->getData();
+          // $changepass = $form->getData();
+          //
+          // $user = $this->get('security.token_storage')
+          //   ->getToken()
+          //   ->getUser();
+          //
+          // $oldpassowrd = $this->container
+          //  ->get('security.password_encoder')
+          //  ->encodePassword($user, $changepass->getOldPassword());
+          //
+          // if($oldpassowrd != $user->getPassword()){
+          //
+          // }
+          //
+          // $hashedPassword = $this->container
+          //  ->get('security.password_encoder')
+          //  ->encodePassword($user, $user->getPassword());
+          //
+          // $user->setPassword($hashedPassword);
+          //
+          // $em = $this->getDoctrine()->getManager();
+          // $em->persist($user);
+          // $em->flush();
+          // return $this->redirect("login");
+          //
 
-          $user = $registration->getUser();
-
-          $hashedPassword = $this->container
-           ->get('security.password_encoder')
-           ->encodePassword($user, $user->getPassword());
-
-          $user->setPassword($hashedPassword);
-
-          $em = $this->getDoctrine()->getManager();
-          $em->persist($user);
-          $em->flush();
-          return $this->redirect("login");
+          $response = new JsonResponse();
+          return $response;
       }
 
       return array(

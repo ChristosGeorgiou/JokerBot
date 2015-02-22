@@ -35,20 +35,27 @@ $(function() {
       e.preventDefault()
       var _this = $(this)
       $("#loader").fadeIn();
-      var _modal = $("<span/>").load(_this.attr("href"), function() {
 
-        _modal.find(".ui.modal").modal({
-          onHidden: function() {
-            $(this).remove();
-          },
-          selector: {
-            close: '.close',
-          },
-          debug: true,
-          verbose: true
-        }).modal("show")
+      $.ajax({
+        url: _this.attr("href"),
+        success: function(result) {
 
-        $("#loader").fadeOut("slow");
+          $("body").append(result)
+
+          $(".ui.modal").modal({
+              onHidden: function() {
+                $(this).remove();
+              },
+              selector: {
+                close: '.close',
+              },
+              debug: true,
+              verbose: true
+            }).modal("show")
+
+          $("#loader").fadeOut("slow");
+
+        }
       })
     })
 
