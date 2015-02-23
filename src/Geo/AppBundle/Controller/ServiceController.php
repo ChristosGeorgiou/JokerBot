@@ -1,12 +1,16 @@
 <?php
 namespace Geo\AppBundle\Controller;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Geo\AppBundle\Entity\Draw;
+
 class ServiceController extends Controller {
+
     private $opapws = "http://applications.opap.gr/DrawsRestServices/joker/";
+
     /**
      * @Route("/cron", name="Fetch OPAP")
      * @Template()
@@ -23,21 +27,35 @@ class ServiceController extends Controller {
         }
         return array("fetchedResults" => $fetchedResults);
     }
+
     private function getMissingDraws() {
         $em = $this->getDoctrine()->getManager();
-        $results = $em->createQuery("select min(t.startDraw) as s, max(t.endDraw) as e from GeoAppBundle:Ticket t")->getSingleResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        $results = $em
+          ->createQuery("select min(t.startDraw) as s, max(t.endDraw) as e from GeoAppBundle:Ticket t")
+          ->getSingleResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         //var_dump($results);
         if (!$results["s"] || !$results["e"]) {
             return array();
         }
+        $results["s"] = ($results["s"]<1500)?1500:$results["s"];
         $range = range($results["s"], $results["e"]);
-        $draws = $em->getRepository("GeoAppBundle:Draw")->createQueryBuilder('q')->select('q.code')->getQuery()->getScalarResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        //var_dump($range);
+        $draws = $em
+          ->getRepository("GeoAppBundle:Draw")
+          ->createQueryBuilder('q')
+          ->select('q.code')
+          ->getQuery()
+          ->getScalarResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         $codes = array_map('current', $draws);
         //var_dump($codes);
         $missing = array_diff($range, $codes);
+        //var_dump($missing);
+        //die();
         return $missing;
     }
+
     private function fetchDraw($code, &$draw) {
+      try{
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->opapws . $code . ".json");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -50,7 +68,14 @@ class ServiceController extends Controller {
         } else {
             return FALSE;
         }
+      }
+      catch(Exception $e)
+      {
+        die('Caught exception: '.  $e->getMessage(). "\n");
+        //return FALSE;
+      }
     }
+
     private function saveDraw($draw) {
         $_draw = new Draw();
         $_draw->setCode($draw->drawNo);
@@ -61,6 +86,7 @@ class ServiceController extends Controller {
         $em->persist($_draw);
         $em->flush();
     }
+
     private function refreshTickets($draw) {
     }
 }
