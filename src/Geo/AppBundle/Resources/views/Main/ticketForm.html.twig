@@ -3,14 +3,16 @@
     <i class="close icon"></i>
 
     <div class="header">
-      {% if id is defined %}
+      {% if ticket.id is defined %}
         Edit Ticket
       {% else %}
-        Add new Ticket
+        Add new Ticket - {{ticket.createdAt|date("d/m/Y")}}
       {% endif %}
     </div>
 
     <div class="ui form content">
+      <input class="" type="hidden" name="ticket_id" value="{{ ticket.id|default('') }}">
+
       <div class="ui horizontal divider" style="margin-top: 0;">
         Draws
       </div>
@@ -18,11 +20,11 @@
       <div class="two fields">
         <div class="field">
           <label>From</label>
-          <input class="draw-range" type="text" name="start_draw" value="">
+          <input class="draw-range" type="text" name="start_draw" value="{{ ticket.startDraw|default('') }}">
         </div>
         <div class="field">
           <label>To</label>
-          <input class="draw-range" type="text" name="end_draw" value="">
+          <input class="draw-range" type="text" name="end_draw" value="{{ ticket.endDraw|default('') }}">
         </div>
       </div>
 
@@ -31,18 +33,18 @@
         Columns
       </div>
 
-      {% for i in 1..5 %}
+      {% for i in 0..4 %}
       <div class="seven fields jokernumbers">
         <div class="field">
-          <label>{{i}}.</label>
+          <label>{{i+1}}.</label>
         </div>
-        {% for j in 1..5 %}
+        {% for j in 0..4 %}
         <div class="field">
-          <input type="text" name="number[{{i}}][{{j}}]" value="">
+          <input type="text" name="number[{{i}}][{{j}}]" value="{{ ticket.ticketDetail[i].numbers[j]|default('') }}">
         </div>
         {% endfor %}
         <div class="field">
-          <input type="text" name="number[{{i}}][6]" value="">
+          <input type="text" name="number[{{i}}][5]" value="{{ ticket.ticketDetail[i].numbers[5]|default('') }}">
         </div>
       </div>
       {% endfor %}

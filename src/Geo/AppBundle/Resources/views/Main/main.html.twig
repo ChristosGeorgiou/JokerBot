@@ -14,7 +14,7 @@
       $(".ui.loading.segment:after").css("top","150px");
       $(anchor).siblings().removeClass("active");
       $(anchor).addClass("active");
-      $("#ticket").load("ticket/"+ticket_id,function(){
+      $("#ticket").load("ticket/read/"+ticket_id,function(){
         $("#ticket").removeClass("loading");
       })
     }
@@ -36,7 +36,7 @@
   {% if tickets|length %}
     <div class="five wide column">
       <div class="ui vertical pointing fluid menu">
-        <a href="ticketform" class="item amodal">
+        <a href="/ticket/create" class="item amodal">
           <strong><i class="add icon"></i> Add New Ticket</strong>
         </a>
         {% for ticket in tickets %}

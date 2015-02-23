@@ -50,7 +50,7 @@ class MainController extends Controller {
     }
 
     /**
-     * @Route("/ticket/{id}", name="Ticket")
+     * @Route("/ticket/read/{id}", name="Ticket")
      * @Template()
      */
     public function ticketAction($id) {
@@ -112,28 +112,45 @@ class MainController extends Controller {
     }
 
     /**
-     * @Route("/ticketform", defaults={"id" = false})
-     * @Route("/ticketform/{id}")
+     * @Route("/ticket/create", defaults={"id" = false})
+     * @Route("/ticket/update/{id}")
      * @Template()
      */
     public function ticketFormAction($id) {
-        return array();
+        $ticket = new Ticket;
+        if($id){
+          $ticket = $this->getDoctrine()
+            ->getRepository("GeoAppBundle:Ticket")
+            ->findOneById($id);
+        }
+        return array(
+          "ticket"=>$ticket,
+        );
     }
 
     /**
      * @Route("/ticketsave")
      */
     public function ticketSaveAction(Request $request) {
+        $_ticket_id = $request->get("ticket_id");
         $_start_draw = $request->get("start_draw");
         $_end_draw = $request->get("end_draw");
         $_number = $request->get("number");
         $em = $this->getDoctrine()->getManager();
-        $ticket = new Ticket();
+
+        if($_ticket_id){
+          $ticket = $this->getDoctrine()
+            ->getRepository("GeoAppBundle:Ticket")
+            ->findOneById($_ticket_id);
+        }
+        else{
+          $ticket = new Ticket();
+          $ticket->setEarnings(0);
+          $ticket->setCreatedAt(new \DateTime());
+          $ticket->setUser($this->get('security.token_storage')->getToken()->getUser());
+        }
         $ticket->setStartDraw($_start_draw);
         $ticket->setEndDraw($_end_draw);
-        $ticket->setEarnings(0);
-        $ticket->setCreatedAt(new \DateTime());
-        $ticket->setUser($this->get('security.token_storage')->getToken()->getUser());
         $em->persist($ticket);
         foreach ($_number as $col => $iter) {
             if (count(array_filter($iter)) == count($iter)) {
