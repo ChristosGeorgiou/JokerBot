@@ -1,20 +1,4 @@
-<script type="text/javascript">
-  $(function(){
-    $(".draw-range").on('input',function(){
-      if($(this).val().length == 4)
-      {
-        $(this).next("input").focus();
-      }
-    });
-    $(".jokernumbers input").on('input',function(){
-      if($(this).val().length == 2)
-      {
-        $(this).next("input").focus();
-      }
-    });
-  })
-</script>
-<form action="ticketsave" class="ui small modal">
+<form id="form-ticket" action="ticketsave" class="ui small modal">
 
     <i class="close icon"></i>
 
@@ -27,7 +11,7 @@
     </div>
 
     <div class="ui form content">
-      <div class="ui horizontal divider" style="">
+      <div class="ui horizontal divider" style="margin-top: 0;">
         Draws
       </div>
 
@@ -71,4 +55,40 @@
         Save Ticket
       </button>
     </div>
+
+    <script type="text/javascript">
+      $(function(){
+        var _inputs = $("#form-ticket").find(':input');
+
+        $(".draw-range")
+          .on("focus",function(){
+            $(this).select();
+          })
+          .on('keypress',function(e){
+            if("0123456789".indexOf(String.fromCharCode(e.which)) < 0){
+              return false;
+            }
+
+            if($(this).val().length == 3)
+            {
+              _inputs.eq( _inputs.index(this)+ 1 ).focus();
+            }
+          });
+
+        $(".jokernumbers input")
+          .on("focus",function(){
+            $(this).select();
+          })
+          .on('keypress',function(e){
+            if("0123456789".indexOf(String.fromCharCode(e.which)) < 0){
+              return false;
+            }
+
+            if($(this).val().length == 1)
+            {
+              _inputs.eq( _inputs.index(this)+ 1 ).focus();
+            }
+          })
+      })
+    </script>
 </form>

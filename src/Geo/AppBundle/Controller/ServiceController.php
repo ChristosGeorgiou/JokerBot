@@ -33,13 +33,11 @@ class ServiceController extends Controller {
         $results = $em
           ->createQuery("select min(t.startDraw) as s, max(t.endDraw) as e from GeoAppBundle:Ticket t")
           ->getSingleResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-        //var_dump($results);
         if (!$results["s"] || !$results["e"]) {
             return array();
         }
         $results["s"] = ($results["s"]<1500)?1500:$results["s"];
         $range = range($results["s"], $results["e"]);
-        //var_dump($range);
         $draws = $em
           ->getRepository("GeoAppBundle:Draw")
           ->createQueryBuilder('q')
@@ -47,10 +45,7 @@ class ServiceController extends Controller {
           ->getQuery()
           ->getScalarResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
         $codes = array_map('current', $draws);
-        //var_dump($codes);
         $missing = array_diff($range, $codes);
-        //var_dump($missing);
-        //die();
         return $missing;
     }
 
