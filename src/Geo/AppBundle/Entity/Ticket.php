@@ -64,7 +64,14 @@ class Ticket
     {
       $_startDraw = $this->getStartDraw();
       $_endDraw = $this->getEndDraw();
-      $_completion = ($_endDraw <= $_currentDraw)?100:($_currentDraw - $_startDraw)*100/($_endDraw - $_startDraw);
+      if($_startDraw == $_endDraw){
+        $_completion=($_endDraw == $_currentDraw)?1:0;
+      }
+      else{
+        $_pc = ($_currentDraw - $_startDraw)/($_endDraw - $_startDraw);
+        $_completion = min(1,$_pc);
+      }
+
       $this->completion = $_completion;
 
       return $this;

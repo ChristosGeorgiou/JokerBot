@@ -22,7 +22,8 @@ $(function(){
     {% else %}
     <div class="item"><strong>{{ticket.earnings|number_format(2, '.', ',')}}&euro;</strong></div>
     {% endif %}
-    <div class="item"><strong>{{ticket.completion|number_format(0)}}%</strong></div>
+    {% set completion = ticket.completion * 100 %}
+    <div class="item"><strong>{{completion|number_format(0)}}%</strong></div>
     SUPER WIN!!!
   </div>
 
