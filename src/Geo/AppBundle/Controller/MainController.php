@@ -8,6 +8,7 @@ use Geo\AppBundle\Entity\Ticket;
 use Geo\AppBundle\Entity\TicketDetail;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class MainController extends Controller {
 
@@ -122,6 +123,10 @@ class MainController extends Controller {
           $ticket = $this->getDoctrine()
             ->getRepository("GeoAppBundle:Ticket")
             ->findOneById($id);
+
+          if($ticket->getuser() != $this->get('security.token_storage')->getToken()->getUser()){
+            throw new AccessDeniedException();
+          }
         }
         return array(
           "ticket"=>$ticket,
@@ -129,19 +134,39 @@ class MainController extends Controller {
     }
 
     /**
+     * @Route("/ticket/delete/{id}")
+     * @Template()
+     */
+    public function ticketDeleteAction($id) {
+        // $ticket = new Ticket;
+        // if($id){
+        //   $ticket = $this->getDoctrine()
+        //     ->getRepository("GeoAppBundle:Ticket")
+        //     ->findOneById($id);
+        // }
+        // return array(
+        //   "ticket"=>$ticket,
+        // );
+    }
+
+    /**
      * @Route("/ticketsave")
      */
     public function ticketSaveAction(Request $request) {
+
+        $em = $this->getDoctrine()->getManager();
+
         $_ticket_id = $request->get("ticket_id");
         $_start_draw = $request->get("start_draw");
         $_end_draw = $request->get("end_draw");
         $_number = $request->get("number");
-        $em = $this->getDoctrine()->getManager();
 
         if($_ticket_id){
-          $ticket = $this->getDoctrine()
-            ->getRepository("GeoAppBundle:Ticket")
-            ->findOneById($_ticket_id);
+          $ticket = $em->getRepository("GeoAppBundle:Ticket")->findOneById($_ticket_id);
+
+          foreach($ticket->getTicketDetail() as $_ticketDetail){
+            $em->remove($_ticketDetail);
+          }
         }
         else{
           $ticket = new Ticket();
@@ -149,9 +174,11 @@ class MainController extends Controller {
           $ticket->setCreatedAt(new \DateTime());
           $ticket->setUser($this->get('security.token_storage')->getToken()->getUser());
         }
+
         $ticket->setStartDraw($_start_draw);
         $ticket->setEndDraw($_end_draw);
         $em->persist($ticket);
+
         foreach ($_number as $col => $iter) {
             if (count(array_filter($iter)) == count($iter)) {
                 $detail = new TicketDetail();
