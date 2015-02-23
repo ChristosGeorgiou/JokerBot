@@ -118,12 +118,10 @@ class MainController extends Controller {
      * @Template()
      */
     public function ticketFormAction($id) {
+        $em = $this->getDoctrine()->getManager();
         $ticket = new Ticket;
         if($id){
-          $ticket = $this->getDoctrine()
-            ->getRepository("GeoAppBundle:Ticket")
-            ->findOneById($id);
-
+          $ticket = $em->getRepository("GeoAppBundle:Ticket")->findOneById($id);
           if($ticket->getuser() != $this->get('security.token_storage')->getToken()->getUser()){
             throw new AccessDeniedException();
           }
@@ -135,18 +133,18 @@ class MainController extends Controller {
 
     /**
      * @Route("/ticket/delete/{id}")
-     * @Template()
      */
     public function ticketDeleteAction($id) {
-        // $ticket = new Ticket;
-        // if($id){
-        //   $ticket = $this->getDoctrine()
-        //     ->getRepository("GeoAppBundle:Ticket")
-        //     ->findOneById($id);
-        // }
-        // return array(
-        //   "ticket"=>$ticket,
-        // );
+      $em = $this->getDoctrine()->getManager();
+
+      $ticket = $em->getRepository("GeoAppBundle:Ticket")->findOneById($id);
+      if($ticket->getuser() != $this->get('security.token_storage')->getToken()->getUser()){
+        throw new AccessDeniedException();
+      }
+      $em->remove($ticket);
+      $em->flush();
+      
+      return $this->redirect("/");
     }
 
     /**

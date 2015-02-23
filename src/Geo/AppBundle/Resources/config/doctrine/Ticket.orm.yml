@@ -19,6 +19,7 @@ Geo\AppBundle\Entity\Ticket:
     oneToMany:
         ticketDetail:
             targetEntity: TicketDetail
+            orphanRemoval: true
             mappedBy: ticket
     manyToOne:
         user:
