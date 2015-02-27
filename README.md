@@ -1,4 +1,4 @@
-# JokerBot
+## What is JokerBot
 JokerBot is a simple application for users that want to store their tickets of
 the greek OPAP's [Joker](http://www.opap.gr/en/web/guest/joker-draw-results)
 lottery which are valid in recurring draws.
