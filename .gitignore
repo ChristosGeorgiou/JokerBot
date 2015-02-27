@@ -34,7 +34,11 @@
 
 # Composer PHAR
 /composer.phar
+composer.lock
 
 # SQL DUMPS
 /sql/
-composer.lock
+
+# PhpStorm
+/.idea
+/.idea/*
