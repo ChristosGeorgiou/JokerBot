@@ -1,0 +1,3 @@
+services:
+    opap:
+        class: Geo\AppBundle\Controller\ServiceController

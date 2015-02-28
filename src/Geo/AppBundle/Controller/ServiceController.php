@@ -2,9 +2,8 @@
 namespace Geo\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+use Symfony\Component\Console\Output\OutputInterface;
 use Geo\AppBundle\Entity\Draw;
 
 class ServiceController extends Controller
@@ -12,22 +11,34 @@ class ServiceController extends Controller
 
     private $opapws = "http://applications.opap.gr/DrawsRestServices/joker/";
 
-    /**
-     * @Route("/cron", name="Fetch OPAP")
-     * @Template()
-     */
-    public function fetchAction()
+    public function fetchAction(OutputInterface &$output)
     {
-        $missingDraws = $this->getMissingDraws();
-        $fetchedResults = array();
-        foreach ($missingDraws as $code) {
-            if ($status = $this->fetchDraw($code, $draw)) {
-                $fetchedResults[] = array("code" => $code, "status" => $status, "date" => date("d/m/Y", strtotime($draw->drawTime)), "numbers" => json_encode($draw->results),);
-                $this->saveDraw($draw);
-                $this->refreshTickets($draw);
+        $output->writeln("Loading missing draws");
+
+        //$fetchedResults = array();
+        if (!$missingDraws = $this->getMissingDraws()) {
+            $output->writeln("No missing draws were found");
+            return;
+        } else {
+            $output->writeln("Missing draws: ", implode(", ", $missingDraws));
+
+            foreach ($missingDraws as $code) {
+                $output->write("Draw {$code}: ");
+
+                if ($status = $this->fetchDraw($code, $draw)) {
+                    $fetchedResults[] = array("code" => $code, "status" => $status, "date" => date("d/m/Y", strtotime($draw->drawTime)), "numbers" => json_encode($draw->results),);
+                    $this->saveDraw($draw);
+                    $this->refreshTickets($draw);
+
+                    $output->writeln("COMPLETED [" . json_encode($draw) . "]");
+                } else {
+                    $output->writeln("FAILED");
+                }
+
+                //$output->writeln($results);
             }
+            //return $fetchedResults;
         }
-        return array("fetchedResults" => $fetchedResults);
     }
 
     private function getMissingDraws()
