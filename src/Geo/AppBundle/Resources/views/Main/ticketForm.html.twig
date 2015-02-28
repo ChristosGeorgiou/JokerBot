@@ -3,94 +3,75 @@
     <i class="close icon"></i>
 
     <div class="header">
-      {% if ticket.id is defined %}
-        Edit Ticket
-      {% else %}
-        Add new Ticket - {{ticket.createdAt|date("d/m/Y")}}
-      {% endif %}
+        {% if ticket.id is defined %}
+            Edit Ticket
+        {% else %}
+            Add new Ticket - {{ ticket.createdAt|date("d/m/Y") }}
+        {% endif %}
     </div>
 
     <div class="ui form content">
-      <input class="" type="hidden" name="ticket_id" value="{{ ticket.id|default('') }}">
+        <input class="" type="hidden" name="ticket_id" value="{{ ticket.id|default('') }}">
 
-      <div class="ui horizontal divider" style="margin-top: 0;">
-        Draws
-      </div>
-
-      <div class="two fields">
-        <div class="field">
-          <label>From</label>
-          <input class="draw-range" type="text" name="start_draw" value="{{ ticket.startDraw|default('') }}">
+        <div class="ui horizontal divider" style="margin-top: 0;">
+            Draws
         </div>
-        <div class="field">
-          <label>To</label>
-          <input class="draw-range" type="text" name="end_draw" value="{{ ticket.endDraw|default('') }}">
+
+        <div class="two fields">
+            <div class="field">
+                <label>From</label>
+                <input class="draw-range" type="text" name="start_draw" value="{{ ticket.startDraw|default('') }}">
+            </div>
+            <div class="field">
+                <label>To</label>
+                <input class="draw-range" type="text" name="end_draw" value="{{ ticket.endDraw|default('') }}">
+            </div>
         </div>
-      </div>
 
 
-      <div class="ui horizontal divider">
-        Columns
-      </div>
+        <div class="ui horizontal divider">
+            Columns
+        </div>
 
-      {% for i in 0..4 %}
-      <div class="seven fields jokernumbers">
-        <div class="field">
-          <label>{{i+1}}.</label>
-        </div>
-        {% for j in 0..4 %}
-        <div class="field">
-          <input type="text" name="number[{{i}}][{{j}}]" value="{{ ticket.ticketDetail[i].numbers[j]|default('') }}">
-        </div>
+        {% for i in 0..4 %}
+            <div class="seven fields jokernumbers">
+                <div class="field">
+                    <label>{{ i+1 }}.</label>
+                </div>
+                {% for j in 0..4 %}
+                    <div class="field">
+                        <input class="jokernumber" type="text" name="number[{{ i }}][{{ j }}]"
+                               value="{{ ticket.ticketDetail[i].numbers[j]|default('') }}">
+                    </div>
+                {% endfor %}
+                <div class="field">
+                    <input class="jokernumber" type="text" name="number[{{ i }}][5]"
+                           value="{{ ticket.ticketDetail[i].numbers[5]|default('') }}">
+                </div>
+            </div>
         {% endfor %}
-        <div class="field">
-          <input type="text" name="number[{{i}}][5]" value="{{ ticket.ticketDetail[i].numbers[5]|default('') }}">
-        </div>
-      </div>
-      {% endfor %}
 
     </div>
 
     <div class="actions">
-      <button type="submit" class="ui green button ok">
-        <i class="icon checkmark"></i>
-        Save Ticket
-      </button>
+        <button type="submit" class="ui green button ok">
+            <i class="icon checkmark"></i>
+            Save Ticket
+        </button>
     </div>
 
+    <script src="/plugins/jquery-autotab-master/js/jquery.autotab.min.js"></script>
+
     <script type="text/javascript">
-      $(function(){
-        var _inputs = $("#form-ticket").find(':input');
-
-        $(".draw-range")
-          .on("focus",function(){
-            $(this).select();
-          })
-          .on('keypress',function(e){
-            if("0123456789".indexOf(String.fromCharCode(e.which)) < 0){
-              return false;
-            }
-
-            if($(this).val().length == 3)
-            {
-              _inputs.eq( _inputs.index(this)+ 1 ).focus();
-            }
-          });
-
-        $(".jokernumbers input")
-          .on("focus",function(){
-            $(this).select();
-          })
-          .on('keypress',function(e){
-            if("0123456789".indexOf(String.fromCharCode(e.which)) < 0){
-              return false;
-            }
-
-            if($(this).val().length == 1)
-            {
-              _inputs.eq( _inputs.index(this)+ 1 ).focus();
-            }
-          })
-      })
+        $(function () {
+            $('.draw-range').autotab({
+                format:"number",
+                maxlength: 4
+            });
+            $('.jokernumber').autotab({
+                format:"number",
+                maxlength: 2
+            });
+        })
     </script>
 </form>
