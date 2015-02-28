@@ -78,7 +78,12 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            return $this->redirect("login");
+
+            return array(
+                'form' => false,
+                "error" => false,
+            );
+
         }
 
         return array(

@@ -51,8 +51,8 @@
                     ]
                 }
             }, {
-                debug:true,
-                verbose:true,
+                debug: true,
+                verbose: true,
                 on: 'blur',
                 inline: 'true'
             });
@@ -65,50 +65,73 @@
     <div class="ui smallbox">
         <div class="logo" style="text-align:center">Register</div>
         <div class="ui piled segment">
-            {{ form_start(form, { 'attr': {'id': 'form-register','class': 'ui form'} }) }}
-            {% if not form.vars.valid %}
-                <div class="ui small negative message">
-                    {% for error in form.vars.errors %}
-                        <p>{{ error.message }}</p>
-                    {% endfor %}
-                    {% for error in form.user.username.vars.errors %}
-                        <p>{{ error.message }}</p>
-                    {% endfor %}
-                    {% for error in form.user.password.password.vars.errors %}
-                        <p>{{ error.message }}</p>
-                    {% endfor %}
+            {% if form %}
+                {{ form_start(form, { 'attr': {'id': 'form-register','class': 'ui form'} }) }}
+                {% if not form.vars.valid %}
+                    <div class="ui small negative message">
+                        {% for error in form.vars.errors %}
+                            <p>{{ error.message }}</p>
+                        {% endfor %}
+                        {% for error in form.user.username.vars.errors %}
+                            <p>{{ error.message }}</p>
+                        {% endfor %}
+                        {% for error in form.user.password.password.vars.errors %}
+                            <p>{{ error.message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="field" style="padding-top:5px;">
+                    <div class="ui big fluid left icon input">
+                        <i class="user icon"></i>
+                        {{ form_widget(form.user.username) }}
+                    </div>
                 </div>
+                <div class="field" style="padding-top:5px;">
+                    <div class="ui big fluid left icon input">
+                        <i class="lock icon"></i>
+                        {{ form_widget(form.user.password.password) }}
+                    </div>
+                </div>
+                <div class="field" style="padding-top:5px;">
+                    <div class="ui big fluid left icon input">
+                        <i class="refresh icon"></i>
+                        {{ form_widget(form.user.password.repeat) }}
+                    </div>
+                </div>
+                <div class="field" style="padding-top:5px;text-align:center">
+                    <div class="ui checkbox">
+                        {{ form_widget(form.terms) }}
+                        <label for="{{ form.terms.vars.id }}">
+                            I have read and accept the <a href="tos" class='amodal'>TOS</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="field" style="padding-top:5px;">
+                    {{ form_widget(form.Register, { 'attr': {'class': "ui big fluid button green"} }) }}
+                </div>
+                {{ form_end(form) }}
+            {% elseif error %}
+                <div class="ui error message">
+                    <div class="header">
+                        An error was occurred.
+                    </div>
+                    <p>Please try again sortly.</p>
+                    <i>{{ error }}</i>
+                </div>
+                <a href="{{ path('register') }}" class="ui big fluid button blue">
+                    <i class="icon refresh"></i> Try Again
+                </a>
+            {% else %}
+                <div class="ui success message">
+                    <div class="header">
+                        The registration was complete.
+                    </div>
+                    <p>You may now proceed to login page.</p>
+                </div>
+                <a href="{{ path('login') }}" class="ui big fluid button blue">
+                    <i class="icon sign in"></i> Go to Login
+                </a>
             {% endif %}
-            <div class="field" style="padding-top:5px;">
-                <div class="ui big fluid left icon input">
-                    <i class="user icon"></i>
-                    {{ form_widget(form.user.username) }}
-                </div>
-            </div>
-            <div class="field" style="padding-top:5px;">
-                <div class="ui big fluid left icon input">
-                    <i class="lock icon"></i>
-                    {{ form_widget(form.user.password.password) }}
-                </div>
-            </div>
-            <div class="field" style="padding-top:5px;">
-                <div class="ui big fluid left icon input">
-                    <i class="refresh icon"></i>
-                    {{ form_widget(form.user.password.repeat) }}
-                </div>
-            </div>
-            <div class="field" style="padding-top:5px;text-align:center">
-                <div class="ui checkbox">
-                    {{ form_widget(form.terms) }}
-                    <label for="{{ form.terms.vars.id }}">
-                        I have read and accept the <a href="tos" class='amodal'>TOS</a>
-                    </label>
-                </div>
-            </div>
-            <div class="field" style="padding-top:5px;">
-                {{ form_widget(form.Register, { 'attr': {'class': "ui big fluid button green"} }) }}
-            </div>
-            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}
