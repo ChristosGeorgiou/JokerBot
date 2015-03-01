@@ -81,29 +81,6 @@ class MainController extends Controller
         );
     }
 
-    private function sliceColumn($column)
-    {
-        //var_dump($column);
-        $numbers = array_slice($column, 0, 5);
-        sort($numbers);
-        $joker = $column[5];
-        return array("n" => $numbers, "j" => $joker);
-    }
-
-    private function compareColumns($drawColumn, $ticketColumn)
-    {
-        $res = array();
-        foreach ($ticketColumn["n"] as $_ticketNumber) {
-            $item["status"] = in_array($_ticketNumber, $drawColumn["n"]);
-            $item["value"] = $_ticketNumber;
-            $res[] = $item;
-        }
-        $item["status"] = ($ticketColumn["j"] == $drawColumn["j"]);
-        $item["value"] = $ticketColumn["j"];
-        $res[] = $item;
-        return $res;
-    }
-
     /**
      * @Route("/ticket/create", defaults={"id" = false})
      * @Route("/ticket/update/{id}")
@@ -182,6 +159,30 @@ class MainController extends Controller
         $em->flush();
         $response = new JsonResponse();
         return $response;
+    }
+
+    //Helper functions
+    private function sliceColumn($column)
+    {
+        //var_dump($column);
+        $numbers = array_slice($column, 0, 5);
+        sort($numbers);
+        $joker = $column[5];
+        return array("n" => $numbers, "j" => $joker);
+    }
+
+    private function compareColumns($drawColumn, $ticketColumn)
+    {
+        $res = array();
+        foreach ($ticketColumn["n"] as $_ticketNumber) {
+            $item["status"] = in_array($_ticketNumber, $drawColumn["n"]);
+            $item["value"] = $_ticketNumber;
+            $res[] = $item;
+        }
+        $item["status"] = ($ticketColumn["j"] == $drawColumn["j"]);
+        $item["value"] = $ticketColumn["j"];
+        $res[] = $item;
+        return $res;
     }
 
     private function getCurrentDraw()

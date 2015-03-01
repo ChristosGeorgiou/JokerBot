@@ -18,14 +18,11 @@ class ServiceController extends Controller
         $progress->setMessage('Loading missing draws...');
         $progress->advance();
 
-
         if (!$missingDraws = $this->getMissingDraws()) {
             $progress->setMessage('No missing draws were found!');
             $progress->advance();
             return;
         } else {
-//            var_dump($missingDraws);
-//            die("ASd");
             $progress->setMessage("Found " . count($missingDraws) . " missing draws");
             $progress->advance();
 
