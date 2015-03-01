@@ -20,19 +20,12 @@ class OpapCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $progress = new ProgressBar($output);
-
         $progress->setFormat('%message%');
-        //$progress->setFormat('[ %percent:3s%% - %elapsed:8s%/%estimated:-8s% - MEM: %memory:7s% ] %message%');
-
         $progress->setMessage('Loading params. Please wait...');
         $progress->start();
-
-        $results = $this->getContainer()->get("opap")->fetchAction($progress);
-
+        $this->getContainer()->get("opap")->fetchAction($progress);
         $progress->setMessage('Completed');
         $progress->advance();
-
         $progress->finish();
-
     }
 }
