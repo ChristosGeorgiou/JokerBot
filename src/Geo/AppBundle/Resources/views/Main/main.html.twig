@@ -40,23 +40,28 @@
                     </a>
                     {% for ticket in tickets %}
                         <a class="item ticket" data-id="{{ ticket.id }}">
-                            {{ ticket.createdAt|date("d/m/Y") }} - {{ ticket.startDraw }}/{{ ticket.endDraw }}
+                            <div class="ui label {{ ticket.earnings or ticket.earnings == -1 ? 'green' : '' }} }}">
+                                {{ ticket.earnings == -1 ? "SUPER<br>WIN!!!" : [ticket.earnings|number_format(2),"&euro;"]|join|raw }}
+                            </div>
+                            {{ ticket.startDraw }} - {{ ticket.endDraw }}<br>
+                            <small>{{ ticket.createdAt|date("d/m/Y") }} | {{ (ticket.completion * 100) | round  }}%</small>
                         </a>
                     {% endfor %}
                 </div>
                 <div class="ui blue segment">
                     <h4 class="ui header">Latest Draw</h4>
+
                     <div class="ui statistic fluid" style="width: 100%;">
                         <div class="value" style="color: #666;">
-                            {{draw.code}}
+                            {{ draw.code }}
                         </div>
                         <div class="label">
-                            {{draw.drawAt|date("d/m/Y")}}
+                            {{ draw.drawAt|date("d/m/Y") }}
                         </div>
                     </div>
                     <div class="ui tiny circular labels numbers">
                         {% for number in draw.numbers %}
-                            <span class="ui label">{{number}}</span>
+                            <span class="ui label">{{ number }}</span>
                         {% endfor %}
                     </div>
                 </div>
