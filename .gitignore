@@ -32,8 +32,6 @@
 /app/phpunit.xml
 /phpunit.xml
 
-# Composer
-/composer.phar
 /composer.lock
 
 # SQL DUMPS
@@ -41,4 +39,3 @@
 
 # PhpStorm
 /.idea
-/.idea/*
