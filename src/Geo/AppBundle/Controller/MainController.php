@@ -199,7 +199,15 @@ class MainController extends Controller
 
     private function getCurrentDraw()
     {
-        $draw = $this->getDoctrine()->getRepository("GeoAppBundle:Draw")->findOneBy(array(), array('code' => 'DESC'));
-        return $draw->getCode();
+        $draw = $this->getDoctrine()
+            ->getRepository("GeoAppBundle:Draw")
+            ->findOneBy(array(), array('code' => 'DESC'));
+
+        if ($draw) {
+            return $draw->getCode();
+        } else {
+            return false;
+        }
     }
+
 }
