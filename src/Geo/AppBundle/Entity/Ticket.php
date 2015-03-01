@@ -15,6 +15,7 @@ class Ticket
     private $ticketDetail;
 
     private $earnings;
+    private $currentDraw;
     private $completion;
 
     private $user;
@@ -60,26 +61,26 @@ class Ticket
         return $this->earnings;
     }
 
-    public function setCompletion($_currentDraw)
-    {
-      $_startDraw = $this->getStartDraw();
-      $_endDraw = $this->getEndDraw();
-      if($_startDraw == $_endDraw){
-        $_completion=($_endDraw == $_currentDraw)?1:0;
-      }
-      else{
-        $_pc = ($_currentDraw - $_startDraw)/($_endDraw - $_startDraw);
-        $_completion = min(1,$_pc);
-      }
-
-      $this->completion = $_completion;
-
-      return $this;
+    public function setCurrentDraw($currentDraw){
+        $this->currentDraw = $currentDraw;
     }
 
     public function getCompletion()
     {
-        return $this->completion;
+        if(!$this->currentDraw){
+            return 0;
+        }
+
+        $_startDraw = $this->getStartDraw();
+        $_endDraw = $this->getEndDraw();
+        if ($_startDraw == $_endDraw) {
+            $_completion = ($_endDraw == $this->currentDraw) ? 1 : 0;
+        } else {
+            $_pc = ($this->currentDraw - $_startDraw) / ($_endDraw - $_startDraw);
+            $_completion = min(1, $_pc);
+        }
+
+        return $_completion;
     }
 
     public function setCreatedAt($createdAt)
@@ -93,7 +94,6 @@ class Ticket
     {
         return $this->createdAt;
     }
-
 
     public function setTicketDetail(\Geo\AppBundle\Entity\TicketDetail $ticketDetail = null)
     {
@@ -109,11 +109,11 @@ class Ticket
 
     public function setUser(User $user)
     {
-      $this->user = $user;
+        $this->user = $user;
     }
 
     public function getUser()
     {
-      return $this->user;
+        return $this->user;
     }
 }

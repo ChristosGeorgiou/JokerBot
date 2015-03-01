@@ -73,8 +73,6 @@ class MainController extends Controller
             ->getQuery()
             ->getResult();
 
-        $results = array();
-        //$_ticketDetails = $ticket->getTicketDetail();
         foreach ($ticket->getTicketDetail() as $_ticketDetail) {
             $_ticketDetailNumbersSliced[] = $this->sliceColumn($_ticketDetail->getNumbers());
         }
@@ -89,9 +87,12 @@ class MainController extends Controller
             $earnings += $draw->getEarnings();
         }
         $ticket->setEarnings($earnings);
-        $ticket->setCompletion($this->getCurrentDraw());
-        //var_dump($draw->getResults());
-        return array("ticket" => $ticket, "draws" => $draws,);
+        $ticket->setCurrentDraw($this->getCurrentDraw());
+
+        return array(
+            "ticket" => $ticket,
+            "draws" => $draws,
+        );
     }
 
     private function sliceColumn($column)
