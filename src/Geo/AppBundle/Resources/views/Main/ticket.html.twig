@@ -1,80 +1,79 @@
 <script type="text/javascript">
-$(function(){
-  $('.ui.accordion').accordion();
-  $('.ui.dropdown').dropdown();
-})
+    $(function () {
+        $('.ui.accordion').accordion();
+        $('.ui.dropdown').dropdown();
+    })
 </script>
 <div class="ui top attached tertiary segment" style="margin-top:0">
 
-  <div class="ui icon top left pointing dropdown">
-    <i class="icon bars"></i>
-    <div class="menu">
-      <a href="/ticket/update/{{ticket.id}}" class="item amodal"><i class="icon pencil"></i> Edit</a>
-      <a href="/ticket/delete/{{ticket.id}}" class="item"><i class="icon remove"></i> Delete</a>
-    </div>
-  </div>
+    <div class="ui icon top left pointing dropdown">
+        <i class="icon bars"></i>
 
-  <div class="ui divided horizontal list">
-    <div class="item"><strong>{{ticket.createdAt|date("d/m/Y")}}</strong></div>
-    <div class="item"><strong>{{ticket.startDraw}} - {{ticket.endDraw}}</strong></div>
-    {% if ticket.earnings == -1 %}
-    <div class="item"><strong>SUPER WIN!!!</strong></div>
-    {% else %}
-    <div class="item"><strong>{{ticket.earnings|number_format(2, '.', ',')}}&euro;</strong></div>
-    {% endif %}
-    {% set completion = ticket.completion * 100 %}
-    <div class="item"><strong>{{completion|number_format(0)}}%</strong></div>
-    SUPER WIN!!!
-  </div>
+        <div class="menu">
+            <a href="/ticket/update/{{ ticket.id }}" class="item amodal"><i class="icon pencil"></i> Edit</a>
+            <a href="/ticket/delete/{{ ticket.id }}" class="item"><i class="icon remove"></i> Delete</a>
+        </div>
+    </div>
+
+    <div class="ui divided horizontal list">
+        <div class="item"><strong>{{ ticket.createdAt|date("d/m/Y") }}</strong></div>
+        <div class="item"><strong>{{ ticket.startDraw }} - {{ ticket.endDraw }}</strong></div>
+        <div class="item">
+            <strong>{{ ticket.earnings == -1 ? "SUPER WIN!!!" : [ticket.earnings|number_format(2),"&euro;"]|join|raw }}</strong>
+        </div>
+        <div class="item"><strong>{{ (ticket.completion * 100) | round }}%</strong></div>
+    </div>
 
 </div>
 <div class="ui tall stacked attached segment">
-  <div class="ui grid">
-    {% for draw in draws %}
-    <div class="six wide column">
-      <div class="ui statistic fluid" style="width: 100%;">
-        <div class="value" style="color: #666;">
-          {{draw.code}}
-        </div>
-        <div class="label">
-          {{draw.drawAt|date("d/m/Y")}}
-        </div>
-      </div>
-      <div class="ui tiny circular labels numbers">
-        {% for number in draw.numbers %}
-        <span class="ui label">{{number}}</span>
-        {% endfor %}
-      </div>
-      {% if draw.earnings == -1 %}
-      <span style="margin-top:10px;" class="ui red circular huge fluid label">SUPER WIN!!!</span>
-      {% elseif draw.earnings > 0 %}
-      <span style="margin-top:10px;" class="ui green circular huge fluid label">+ {{draw.earnings|number_format(2, '.', ',')}} &euro;</span>
-      {% endif %}
-    </div>
-    <div class="ten wide column">
-      {% for result in draw.results %}
-      <div class="ui large circular labels numbers">
-        {% for number in result %}
-        <span class="ui {% if number.status %}green{% endif %} label">{{number.value}}</span>
-        {% endfor %}
-      </div>
-      {% endfor %}
-    </div>
+    <div class="ui grid">
+        {% for draw in draws %}
+            <div class="six wide column">
+                <div class="ui statistic fluid" style="width: 100%;">
+                    <div class="value" style="color: #666;">
+                        {{ draw.code }}
+                    </div>
+                    <div class="label">
+                        {{ draw.drawAt|date("d/m/Y") }}
+                    </div>
+                </div>
+                <div class="ui tiny circular labels numbers">
+                    {% for number in draw.numbers %}
+                        <span class="ui label">{{ number }}</span>
+                    {% endfor %}
+                </div>
+                {% if draw.earnings == -1 %}
+                    <span style="margin-top:10px;" class="ui red circular huge fluid label">SUPER WIN!!!</span>
+                {% elseif draw.earnings > 0 %}
+                    <span style="margin-top:10px;"
+                          class="ui green circular huge fluid label">+ {{ draw.earnings|number_format(2, '.', ',') }} &euro;</span>
+                {% endif %}
+            </div>
+            <div class="ten wide column">
+                {% for result in draw.results %}
+                    <div class="ui large circular labels numbers">
+                        {% for number in result %}
+                            <span class="ui {% if number.status %}green{% endif %} label">{{ number.value }}</span>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
 
-    {% if loop.last == false %}
-    <div class="ui divider"></div>
-    {% endif %}
+            {% if loop.last == false %}
+                <div class="ui divider"></div>
+            {% endif %}
 
-    {% else %}
-    <div class="column" style="min-height: 200px;">
-      <div class="ui icon message">
-        <i class="icon frown"></i>
-        <div class="content">
-          <div class="header">No draws where found</div>
-          <p>Please check back soon.</p>
-        </div>
-      </div>
+        {% else %}
+            <div class="column" style="min-height: 200px;">
+                <div class="ui icon message">
+                    <i class="icon frown"></i>
+
+                    <div class="content">
+                        <div class="header">No draws where found</div>
+                        <p>Please check back soon.</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
 </div>
