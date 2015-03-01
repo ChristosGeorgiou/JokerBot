@@ -46,8 +46,13 @@ class MainController extends Controller
                 "user" => $this->get('security.token_storage')->getToken()->getUser()
             ), array('createdAt' => 'DESC'));
 
+        $draw = $this->getDoctrine()
+            ->getRepository("GeoAppBundle:Draw")
+            ->findOneBy(array(), array('code' => 'DESC'));
+
         return array(
             "tickets" => $tickets,
+            "draw" => $draw,
             "greeting" => $msg,
         );
     }

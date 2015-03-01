@@ -1,73 +1,97 @@
 {% extends "GeoAppBundle::base.html.twig" %}
 
 {% block title %}
-  Tickets
+    Tickets
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript">
-  $(function(){
+    <script type="text/javascript">
+        $(function () {
 
-    function fetch_ticket(ticket_id,anchor){
-      $("html, body").animate({ scrollTop: 0 }, "slow");
-      $("#ticket").addClass("loading");
-      $(".ui.loading.segment:after").css("top","150px");
-      $(anchor).siblings().removeClass("active");
-      $(anchor).addClass("active");
-      $("#ticket").load("ticket/read/"+ticket_id,function(){
-        $("#ticket").removeClass("loading");
-      })
-    }
+            function fetch_ticket(ticket_id, anchor) {
+                $("html, body").animate({scrollTop: 0}, "slow");
+                $("#ticket").addClass("loading");
+                $(".ui.loading.segment:after").css("top", "150px");
+                $(anchor).siblings().removeClass("active");
+                $(anchor).addClass("active");
+                $("#ticket").load("ticket/read/" + ticket_id, function () {
+                    $("#ticket").removeClass("loading");
+                })
+            }
 
-    $('.ticket').on("click",function(){
-      fetch_ticket($(this).data("id"),$(this))
-    })
+            $('.ticket').on("click", function () {
+                fetch_ticket($(this).data("id"), $(this))
+            })
 
-    if($(".ticket").first().length)
-    {
-      fetch_ticket($(".ticket").first().data("id"),$(".ticket").first());
-    }
-  })
-  </script>
+            if ($(".ticket").first().length) {
+                fetch_ticket($(".ticket").first().data("id"), $(".ticket").first());
+            }
+        })
+    </script>
 {% endblock %}
 
 {% block content %}
-<div class="ui grid">
-  {% if tickets|length %}
-    <div class="five wide column">
-      <div class="ui vertical pointing fluid menu">
-        <a href="/ticket/create" class="item amodal">
-          <strong><i class="add icon"></i> Add New Ticket</strong>
-        </a>
-        {% for ticket in tickets %}
-        <a class="item ticket" data-id="{{ticket.id}}">
-          {{ticket.createdAt|date("d/m/Y")}} - {{ticket.startDraw}}/{{ticket.endDraw}}
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-    <div class="eleven wide column">
-      <div id="ticket" class="ui segment" style="min-height: 200px;padding: 0;"></div>
-    </div>
-  {% else %}
-    <div class="three wide column"></div>
-    <div class="ten wide column">
-      <div class="ui piled segment" style="margin-top: 50px;">
-        <h3 class="ui header">Welcome <strong>{{ app.user.username|title }}</strong> to JokerBot!</h3>
-        <h4>A few things to keep in mind</h4>
-        <p>This is just a fun project of me. I created it just to play with some web techologies.</p>
-        <p>However, this it is a working service, which I use for my personal tickets, and I actively improving.</p>
-        <p>It's is very likely to issues may occure here or there and if so please give me feedback in order to fix them.</p>
-        <p><strong>Also it is VERY IMPORTANT, ALWAYS to validate your ticket in your agent. This service may NOT give you correct results all the time.</strong></p>
-        <p>Finaly this service is based on data provided by OPAP Web Service. That service somtimes lags and doesn't responed correctly. When that happens draw results will not be available</p>
+    <div class="ui grid">
+        {% if tickets|length %}
+            <div class="five wide column">
+                <div class="ui vertical pointing fluid menu">
+                    <a href="/ticket/create" class="item amodal">
+                        <strong><i class="add icon"></i> Add New Ticket</strong>
+                    </a>
+                    {% for ticket in tickets %}
+                        <a class="item ticket" data-id="{{ ticket.id }}">
+                            {{ ticket.createdAt|date("d/m/Y") }} - {{ ticket.startDraw }}/{{ ticket.endDraw }}
+                        </a>
+                    {% endfor %}
+                </div>
+                <div class="ui blue segment">
+                    <h4 class="ui header">Latest Draw</h4>
+                    <div class="ui statistic fluid" style="width: 100%;">
+                        <div class="value" style="color: #666;">
+                            {{draw.code}}
+                        </div>
+                        <div class="label">
+                            {{draw.drawAt|date("d/m/Y")}}
+                        </div>
+                    </div>
+                    <div class="ui tiny circular labels numbers">
+                        {% for number in draw.numbers %}
+                            <span class="ui label">{{number}}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="eleven wide column">
+                <div id="ticket" class="ui segment" style="min-height: 200px;padding: 0;"></div>
+            </div>
+        {% else %}
+            <div class="three wide column"></div>
+            <div class="ten wide column">
+                <div class="ui piled segment" style="margin-top: 50px;">
+                    <h3 class="ui header">Welcome <strong>{{ app.user.username|title }}</strong> to JokerBot!</h3>
+                    <h4>A few things to keep in mind</h4>
 
-        <div class="ui divider"></div>
+                    <p>This is just a fun project of me. I created it just to play with some web techologies.</p>
 
-        <p>So... ready to create your first ticket???. Click bellow...</p>
-        <a href="ticketform" class="ui button green fluid amodal">Add your first Ticket</a>
+                    <p>However, this it is a working service, which I use for my personal tickets, and I actively
+                        improving.</p>
 
-      </div>
+                    <p>It's is very likely to issues may occure here or there and if so please give me feedback in order
+                        to fix them.</p>
+
+                    <p><strong>Also it is VERY IMPORTANT, ALWAYS to validate your ticket in your agent. This service may
+                            NOT give you correct results all the time.</strong></p>
+
+                    <p>Finaly this service is based on data provided by OPAP Web Service. That service somtimes lags and
+                        doesn't responed correctly. When that happens draw results will not be available</p>
+
+                    <div class="ui divider"></div>
+
+                    <p>So... ready to create your first ticket???. Click bellow...</p>
+                    <a href="ticketform" class="ui button green fluid amodal">Add your first Ticket</a>
+
+                </div>
+            </div>
+        {% endif %}
     </div>
-  {% endif %}
-</div>
 {% endblock %}
