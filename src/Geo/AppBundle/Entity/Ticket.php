@@ -14,9 +14,9 @@ class Ticket
     private $createdAt;
     private $ticketDetail;
 
-    private $earnings;
     private $currentDraw;
-    private $completion;
+
+    private $draws;
 
     private $user;
 
@@ -49,16 +49,29 @@ class Ticket
         return $this->endDraw;
     }
 
-    public function setEarnings($earnings)
-    {
-        $this->earnings = $earnings;
+    public function setDraws($draws){
+        $this->draws = $draws;
 
         return $this;
     }
 
     public function getEarnings()
     {
-        return $this->earnings;
+        foreach ($this->ticketDetail as $_ticketDetail) {
+            $_ticketDetailNumbersSliced[] = $this->sliceColumn($_ticketDetail->getNumbers());
+        }
+        $earnings = 0;
+        foreach ($this->draws as $draw) {
+            $_numbers = $this->sliceColumn($draw->getNumbers());
+            $_results = array();
+            foreach ($_ticketDetailNumbersSliced as $_slice) {
+                $_results[] = $this->compareColumns($_numbers, $_slice);
+            }
+            $draw->setResults($_results);
+            $earnings += $draw->getEarnings();
+        }
+
+        return $earnings;
     }
 
     public function setCurrentDraw($currentDraw){
@@ -115,5 +128,28 @@ class Ticket
     public function getUser()
     {
         return $this->user;
+    }
+
+    private function sliceColumn($column)
+    {
+        //var_dump($column);
+        $numbers = array_slice($column, 0, 5);
+        sort($numbers);
+        $joker = $column[5];
+        return array("n" => $numbers, "j" => $joker);
+    }
+
+    private function compareColumns($drawColumn, $ticketColumn)
+    {
+        $res = array();
+        foreach ($ticketColumn["n"] as $_ticketNumber) {
+            $item["status"] = in_array($_ticketNumber, $drawColumn["n"]);
+            $item["value"] = $_ticketNumber;
+            $res[] = $item;
+        }
+        $item["status"] = ($ticketColumn["j"] == $drawColumn["j"]);
+        $item["value"] = $ticketColumn["j"];
+        $res[] = $item;
+        return $res;
     }
 }

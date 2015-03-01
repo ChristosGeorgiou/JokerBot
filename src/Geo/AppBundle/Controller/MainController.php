@@ -23,6 +23,7 @@ class MainController extends Controller
      */
     public function mainAction()
     {
+        $draw = $this->getCurrentDraw();
 
         $tickets = $this->getDoctrine()
             ->getRepository("GeoAppBundle:Ticket")
@@ -30,9 +31,22 @@ class MainController extends Controller
                 "user" => $this->get('security.token_storage')->getToken()->getUser()
             ), array('createdAt' => 'DESC'));
 
-        $draw = $this->getDoctrine()
-            ->getRepository("GeoAppBundle:Draw")
-            ->findOneBy(array(), array('code' => 'DESC'));
+        foreach($tickets as $ticket){
+
+            $draws = $this->getDoctrine()
+                ->getRepository("GeoAppBundle:Draw")
+                ->createQueryBuilder('p')
+                ->where('p.code >= :startDraw')
+                ->andWhere('p.code <= :endDraw')
+                ->setParameter('startDraw', $ticket->getStartDraw())
+                ->setParameter('endDraw', $ticket->getEndDraw())
+                ->orderBy('p.code', 'DESC')
+                ->getQuery()
+                ->getResult();
+
+            $ticket->setDraws($draws);
+            $ticket->setCurrentDraw($draw->getCode());
+        }
 
         return array(
             "tickets" => $tickets,
@@ -62,21 +76,23 @@ class MainController extends Controller
             ->getQuery()
             ->getResult();
 
-        foreach ($ticket->getTicketDetail() as $_ticketDetail) {
-            $_ticketDetailNumbersSliced[] = $this->sliceColumn($_ticketDetail->getNumbers());
-        }
-        $earnings = 0;
-        foreach ($draws as $draw) {
-            $_numbers = $this->sliceColumn($draw->getNumbers());
-            $_results = array();
-            foreach ($_ticketDetailNumbersSliced as $_slice) {
-                $_results[] = $this->compareColumns($_numbers, $_slice);
-            }
-            $draw->setResults($_results);
-            $earnings += $draw->getEarnings();
-        }
-        $ticket->setEarnings($earnings);
-        $ticket->setCurrentDraw($this->getCurrentDraw());
+//        foreach ($ticket->getTicketDetail() as $_ticketDetail) {
+//            $_ticketDetailNumbersSliced[] = $this->sliceColumn($_ticketDetail->getNumbers());
+//        }
+//        $earnings = 0;
+//        foreach ($draws as $draw) {
+//            $_numbers = $this->sliceColumn($draw->getNumbers());
+//            $_results = array();
+//            foreach ($_ticketDetailNumbersSliced as $_slice) {
+//                $_results[] = $this->compareColumns($_numbers, $_slice);
+//            }
+//            $draw->setResults($_results);
+//            $earnings += $draw->getEarnings();
+//        }
+//        $ticket->setEarnings($earnings);
+
+        $ticket->setDraws($draws);
+        $ticket->setCurrentDraw($this->getCurrentDraw()->getCode());
 
         return array(
             "ticket" => $ticket,
@@ -196,40 +212,14 @@ class MainController extends Controller
     }
 
     //Helper functions
-    private function sliceColumn($column)
-    {
-        //var_dump($column);
-        $numbers = array_slice($column, 0, 5);
-        sort($numbers);
-        $joker = $column[5];
-        return array("n" => $numbers, "j" => $joker);
-    }
 
-    private function compareColumns($drawColumn, $ticketColumn)
-    {
-        $res = array();
-        foreach ($ticketColumn["n"] as $_ticketNumber) {
-            $item["status"] = in_array($_ticketNumber, $drawColumn["n"]);
-            $item["value"] = $_ticketNumber;
-            $res[] = $item;
-        }
-        $item["status"] = ($ticketColumn["j"] == $drawColumn["j"]);
-        $item["value"] = $ticketColumn["j"];
-        $res[] = $item;
-        return $res;
-    }
 
     private function getCurrentDraw()
     {
-        $draw = $this->getDoctrine()
+        return $this->getDoctrine()
             ->getRepository("GeoAppBundle:Draw")
             ->findOneBy(array(), array('code' => 'DESC'));
 
-        if ($draw) {
-            return $draw->getCode();
-        } else {
-            return false;
-        }
     }
 
     private function getGreetingMsg(){
