@@ -21,25 +21,6 @@ class MainController extends Controller
     public function mainAction()
     {
 
-        $greetings = array(
-            "6" => "Mornin' Sunshine",
-            "12" => "Good morning",
-            "14" => "Good day",
-            "17" => "Hello!!",
-            "19" => "Good afternoon",
-            "21" => "Good evening",
-            "23" => "Go to bed...",
-        );
-
-        foreach ($greetings as $_time => $_msg) {
-            if (date("G") < $_time) {
-                $msg = $_msg;//"{$_msg}.{$_time}".date("G");
-                break;
-            }
-        }
-
-        //$user = $this->get('security.token_storage')->getToken()->getUser();
-
         $tickets = $this->getDoctrine()
             ->getRepository("GeoAppBundle:Ticket")
             ->findBy(array(
@@ -53,7 +34,7 @@ class MainController extends Controller
         return array(
             "tickets" => $tickets,
             "draw" => $draw,
-            "greeting" => $msg,
+            "greeting" => $this->getGreetingMsg(),
         );
     }
 
@@ -216,4 +197,27 @@ class MainController extends Controller
         }
     }
 
+    private function getGreetingMsg(){
+
+        $msg=false;
+
+        $greetings = array(
+            "6" => "Mornin' Sunshine",
+            "12" => "Good morning",
+            "14" => "Good day",
+            "17" => "Hello!!",
+            "19" => "Good afternoon",
+            "21" => "Good evening",
+            "23" => "Go to bed...",
+        );
+
+        foreach ($greetings as $_time => $_msg) {
+            if (date("G") <= $_time) {
+                $msg = $_msg;
+                break;
+            }
+        }
+
+        return $msg;
+    }
 }
