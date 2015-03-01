@@ -11,6 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
+
 class MainController extends Controller
 {
 
@@ -159,6 +162,37 @@ class MainController extends Controller
         $em->flush();
         $response = new JsonResponse();
         return $response;
+    }
+
+    /**
+     * @Route("/cron")
+     */
+    public function cronAction()
+    {
+        $opapservice = $this->get("opap");
+
+        $log=[];
+
+        $log[]='Loading params. Please wait...';
+        $log[]='Loading missing draws...';
+
+        if (!$missingDraws = $opapservice->getMissingDraws()) {
+            $log[]='No missing draws were found!';
+        } else {
+            $log[]="Found " . count($missingDraws) . " missing draws";
+
+            foreach ($missingDraws as $code) {
+                $draw = false;
+                if ($status = $opapservice->fetchDraw($code, $draw)) {
+                    $log[]="[SUCC] {$code} - " . json_encode($draw->results);
+                    $opapservice->saveDraw($draw);
+                } else {
+                    $log[]="[FAIL] {$code}";
+                }
+            }
+        }
+
+        return new JsonResponse($log);
     }
 
     //Helper functions

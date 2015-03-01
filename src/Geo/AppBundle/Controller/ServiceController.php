@@ -39,7 +39,7 @@ class ServiceController extends Controller
         }
     }
 
-    private function getMissingDraws()
+    public function getMissingDraws()
     {
         $em = $this->getDoctrine()->getManager();
         $results = $em
@@ -61,7 +61,7 @@ class ServiceController extends Controller
         return $missing;
     }
 
-    private function fetchDraw($code, &$draw)
+    public function fetchDraw($code, &$draw)
     {
         try {
             $ch = curl_init();
@@ -82,7 +82,7 @@ class ServiceController extends Controller
         }
     }
 
-    private function saveDraw($draw)
+    public function saveDraw($draw)
     {
         $_draw = new Draw();
         $_draw->setCode($draw->drawNo);
