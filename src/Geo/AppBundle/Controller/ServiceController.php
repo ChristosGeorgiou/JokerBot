@@ -2,42 +2,43 @@
 namespace Geo\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use Symfony\Component\Console\Output\OutputInterface;
 use Geo\AppBundle\Entity\Draw;
+
+use Symfony\Component\Console\Helper\ProgressBar;
+use Doctrine\ORM\Query;
 
 class ServiceController extends Controller
 {
 
     private $opapws = "http://applications.opap.gr/DrawsRestServices/joker/";
 
-    public function fetchAction(OutputInterface &$output)
+    public function fetchAction(ProgressBar &$progress)
     {
-        $output->writeln("Loading missing draws");
 
-        //$fetchedResults = array();
+        $progress->setMessage('Loading missing draws...');
+        $progress->advance();
+
+
         if (!$missingDraws = $this->getMissingDraws()) {
-            $output->writeln("No missing draws were found");
+            $progress->setMessage('No missing draws were found!');
+            $progress->advance();
             return;
         } else {
-            $output->writeln("Missing draws: ", implode(", ", $missingDraws));
+//            var_dump($missingDraws);
+//            die("ASd");
+            $progress->setMessage("Found " . count($missingDraws) . " missing draws");
+            $progress->advance();
 
             foreach ($missingDraws as $code) {
-                $output->write("Draw {$code}: ");
-
                 if ($status = $this->fetchDraw($code, $draw)) {
-                    $fetchedResults[] = array("code" => $code, "status" => $status, "date" => date("d/m/Y", strtotime($draw->drawTime)), "numbers" => json_encode($draw->results),);
+                    $progress->setMessage("[SUCC] {$code} - " . json_encode($draw->results));
+                    $progress->advance();
                     $this->saveDraw($draw);
-                    $this->refreshTickets($draw);
-
-                    $output->writeln("COMPLETED [" . json_encode($draw) . "]");
                 } else {
-                    $output->writeln("FAILED");
+                    $progress->setMessage("[FAIL] {$code}");
+                    $progress->advance();
                 }
-
-                //$output->writeln($results);
             }
-            //return $fetchedResults;
         }
     }
 
@@ -46,7 +47,7 @@ class ServiceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $results = $em
             ->createQuery("select min(t.startDraw) as s, max(t.endDraw) as e from GeoAppBundle:Ticket t")
-            ->getSingleResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+            ->getSingleResult(Query::HYDRATE_ARRAY);
         if (!$results["s"] || !$results["e"]) {
             return array();
         }
@@ -57,7 +58,7 @@ class ServiceController extends Controller
             ->createQueryBuilder('q')
             ->select('q.code')
             ->getQuery()
-            ->getScalarResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+            ->getScalarResult(Query::HYDRATE_ARRAY);
         $codes = array_map('current', $draws);
         $missing = array_diff($range, $codes);
         return $missing;
@@ -94,9 +95,5 @@ class ServiceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->persist($_draw);
         $em->flush();
-    }
-
-    private function refreshTickets($draw)
-    {
     }
 }

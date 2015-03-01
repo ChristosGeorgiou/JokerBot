@@ -1,3 +1,5 @@
 services:
     opap:
         class: Geo\AppBundle\Controller\ServiceController
+        calls:
+            - [setContainer, ["@service_container"]]
