@@ -31,7 +31,7 @@ class MainController extends Controller
                 "user" => $this->get('security.token_storage')->getToken()->getUser()
             ), array('createdAt' => 'DESC'));
 
-        foreach($tickets as $ticket){
+        foreach ($tickets as $ticket) {
 
             $draws = $this->getDoctrine()
                 ->getRepository("GeoAppBundle:Draw")
@@ -187,23 +187,23 @@ class MainController extends Controller
     {
         $opapservice = $this->get("opap");
 
-        $log=[];
+        $log = array();
 
-        $log[]='Loading params. Please wait...';
-        $log[]='Loading missing draws...';
+        $log[] = 'Loading params. Please wait...';
+        $log[] = 'Loading missing draws...';
 
         if (!$missingDraws = $opapservice->getMissingDraws()) {
-            $log[]='No missing draws were found!';
+            $log[] = 'No missing draws were found!';
         } else {
-            $log[]="Found " . count($missingDraws) . " missing draws";
+            $log[] = "Found " . count($missingDraws) . " missing draws";
 
             foreach ($missingDraws as $code) {
                 $draw = false;
                 if ($status = $opapservice->fetchDraw($code, $draw)) {
-                    $log[]="[SUCC] {$code} - " . json_encode($draw->results);
+                    $log[] = "[SUCC] {$code} - " . json_encode($draw->results);
                     $opapservice->saveDraw($draw);
                 } else {
-                    $log[]="[FAIL] {$code}";
+                    $log[] = "[FAIL] {$code}";
                 }
             }
         }
@@ -222,9 +222,10 @@ class MainController extends Controller
 
     }
 
-    private function getGreetingMsg(){
+    private function getGreetingMsg()
+    {
 
-        $msg=false;
+        $msg = false;
 
         $greetings = array(
             "6" => "Mornin' Sunshine",
