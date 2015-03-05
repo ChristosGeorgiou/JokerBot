@@ -37,7 +37,7 @@ class OpapCommand extends ContainerAwareCommand
             $progress->advance();
 
             foreach ($missingDraws as $code) {
-                $draw = new stdClass();
+                $draw = false;
                 if ($status = $opapservice->fetchDraw($code, $draw)) {
                     $progress->setMessage("[SUCC] {$code} - " . json_encode($draw->results));
                     $progress->advance();
