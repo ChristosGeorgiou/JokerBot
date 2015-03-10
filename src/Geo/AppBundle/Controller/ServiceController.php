@@ -10,44 +10,53 @@ use Doctrine\ORM\Query;
 class ServiceController extends Controller
 {
 
+    public $log;
     private $opapws = "http://applications.opap.gr/DrawsRestServices/joker/";
 
-    public function fetchAction(ProgressBar &$progress)
+    public function __construct($logger)
     {
+        $this->logger = $logger;
+    }
 
-        $progress->setMessage('Loading missing draws...');
-        $progress->advance();
+    public function fetch()
+    {
+        $this->log("CALCULATING MISSING DRAWS");
 
         if (!$missingDraws = $this->getMissingDraws()) {
-            $progress->setMessage('No missing draws were found!');
-            $progress->advance();
-            return;
-        } else {
-            $progress->setMessage("Found " . count($missingDraws) . " missing draws");
-            $progress->advance();
+            $this->log('NO MISSING DRAWS WHERE FOUND');
+            return FALSE;
+        }
 
-            foreach ($missingDraws as $code) {
-                if ($status = $this->fetchDraw($code, $draw)) {
-                    $progress->setMessage("[SUCC] {$code} - " . json_encode($draw->results));
-                    $progress->advance();
-                    $this->saveDraw($draw);
-                } else {
-                    $progress->setMessage("[FAIL] {$code}");
-                    $progress->advance();
-                }
+        $this->log("FOUND " . count($missingDraws) . " MISSING DRAWS");
+
+        foreach ($missingDraws as $code) {
+
+            if ($draw = $this->fetchDraw($code)) {
+                $this->log("SUCC - {$code} - " . json_encode($draw->results));
+                $this->saveDraw($draw);
+            } else {
+                $this->log("FAIL - {$code}");
             }
+
         }
     }
 
-    public function getMissingDraws()
+    private function log($message)
+    {
+        $this->logger->info($message);
+        $this->log[] = $message;
+    }
+
+    private function getMissingDraws()
     {
         $em = $this->getDoctrine()->getManager();
         $results = $em
             ->createQuery("select min(t.startDraw) as s, max(t.endDraw) as e from GeoAppBundle:Ticket t")
             ->getSingleResult(Query::HYDRATE_ARRAY);
         if (!$results["s"] || !$results["e"]) {
-            return array();
+            return false;
         }
+
         $results["s"] = ($results["s"] < 1500) ? 1500 : $results["s"];
         $range = range($results["s"], $results["e"]);
         $draws = $em
@@ -58,10 +67,11 @@ class ServiceController extends Controller
             ->getScalarResult(Query::HYDRATE_ARRAY);
         $codes = array_map('current', $draws);
         $missing = array_diff($range, $codes);
+
         return $missing;
     }
 
-    public function fetchDraw($code, &$draw)
+    private function fetchDraw($code)
     {
         try {
             $ch = curl_init();
@@ -71,18 +81,18 @@ class ServiceController extends Controller
             curl_close($ch);
             $ret = json_decode($output);
             if (@$ret->draw) {
-                $draw = $ret->draw;
-                return TRUE;
+                return $ret->draw;
             } else {
                 return FALSE;
             }
         } catch (Exception $e) {
-            die('Caught exception: ' . $e->getMessage() . "\n");
-            //return FALSE;
+
+            $this->log("ERROR:" . $e->getMessage());
+            return FALSE;
         }
     }
 
-    public function saveDraw($draw)
+    private function saveDraw($draw)
     {
         $_draw = new Draw();
         $_draw->setCode($draw->drawNo);

@@ -76,21 +76,6 @@ class MainController extends Controller
             ->getQuery()
             ->getResult();
 
-//        foreach ($ticket->getTicketDetail() as $_ticketDetail) {
-//            $_ticketDetailNumbersSliced[] = $this->sliceColumn($_ticketDetail->getNumbers());
-//        }
-//        $earnings = 0;
-//        foreach ($draws as $draw) {
-//            $_numbers = $this->sliceColumn($draw->getNumbers());
-//            $_results = array();
-//            foreach ($_ticketDetailNumbersSliced as $_slice) {
-//                $_results[] = $this->compareColumns($_numbers, $_slice);
-//            }
-//            $draw->setResults($_results);
-//            $earnings += $draw->getEarnings();
-//        }
-//        $ticket->setEarnings($earnings);
-
         $ticket->setDraws($draws);
         $ticket->setCurrentDraw($this->getCurrentDraw()->getCode());
 
@@ -185,34 +170,12 @@ class MainController extends Controller
      */
     public function cronAction()
     {
-        $opapservice = $this->get("opap");
-
-        $log = array();
-
-        $log[] = 'Loading params. Please wait...';
-        $log[] = 'Loading missing draws...';
-
-        if (!$missingDraws = $opapservice->getMissingDraws()) {
-            $log[] = 'No missing draws were found!';
-        } else {
-            $log[] = "Found " . count($missingDraws) . " missing draws";
-
-            foreach ($missingDraws as $code) {
-                $draw = false;
-                if ($status = $opapservice->fetchDraw($code, $draw)) {
-                    $log[] = "[SUCC] {$code} - " . json_encode($draw->results);
-                    $opapservice->saveDraw($draw);
-                } else {
-                    $log[] = "[FAIL] {$code}";
-                }
-            }
-        }
-
-        return new JsonResponse($log);
+        $fetch_service = $this->get("fetch");
+        $fetch_service->fetch();
+        return new JsonResponse($fetch_service->log);
     }
 
     //Helper functions
-
 
     private function getCurrentDraw()
     {

@@ -8,18 +8,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class OpapCommand extends ContainerAwareCommand
+class FetchCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('opap:fetch')
-            ->setDescription("Fetch opap\'s latest draw");
+            ->setName('draw:fetch')
+            ->setDescription("Fetch opap\'s latest draws");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $opapservice = $this->getContainer()->get("opap");
+        $fetch_service = $this->getContainer()->get("fetch");
         $progress = new ProgressBar($output);
 
         $progress->setFormat('%message%');
@@ -29,7 +29,7 @@ class OpapCommand extends ContainerAwareCommand
         $progress->setMessage('Loading missing draws...');
         $progress->advance();
 
-        if (!$missingDraws = $opapservice->getMissingDraws()) {
+        if (!$missingDraws = $fetch_service->getMissingDraws()) {
             $progress->setMessage('No missing draws were found!');
             $progress->advance();
         } else {
@@ -38,10 +38,10 @@ class OpapCommand extends ContainerAwareCommand
 
             foreach ($missingDraws as $code) {
                 $draw = false;
-                if ($status = $opapservice->fetchDraw($code, $draw)) {
+                if ($status = $fetch_service->fetchDraw($code, $draw)) {
                     $progress->setMessage("[SUCC] {$code} - " . json_encode($draw->results));
                     $progress->advance();
-                    $opapservice->saveDraw($draw);
+                    $fetch_service->saveDraw($draw);
                 } else {
                     $progress->setMessage("[FAIL] {$code}");
                     $progress->advance();

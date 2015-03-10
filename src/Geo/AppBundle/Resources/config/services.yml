@@ -1,5 +1,15 @@
 services:
-    opap:
-        class: Geo\AppBundle\Controller\ServiceController
-        calls:
-            - [setContainer, ["@service_container"]]
+  fetch:
+    class: Geo\AppBundle\Controller\ServiceController
+    calls:
+      - [setContainer, ["@service_container"]]
+    arguments: ["@logger"]
+    tags:
+      - { name: monolog.logger, channel: fetch }
+
+  monolog.formatter.fetch:
+    class: Monolog\Formatter\LineFormatter
+    arguments:
+      - "[%%datetime%%] %%message%%\n"
+    calls:
+        - [includeStacktraces]
