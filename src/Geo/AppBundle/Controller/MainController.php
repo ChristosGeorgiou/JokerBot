@@ -143,7 +143,6 @@ class MainController extends Controller
             }
         } else {
             $ticket = new Ticket();
-            $ticket->setEarnings(0);
             $ticket->setCreatedAt(new \DateTime());
             $ticket->setUser($this->get('security.token_storage')->getToken()->getUser());
         }
